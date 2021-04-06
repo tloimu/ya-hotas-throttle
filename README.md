@@ -45,7 +45,7 @@ Some parts require or benefit from post-print processing:
 
  - drill the five button holes with e.g. 8.5mm drill to make the hole walls smooth and the buttons will work smoother
  - some screw holes may benefit from drilling for easier fit
- - throttle center detent hole could be drilled bigger for stronger detent or cone shaped with a lerger drill head for smoother detent exit/entry
+ - throttle center detent hole could be drilled bigger for stronger detent or cone shaped with a bit larger drill head for smoother detent exit/entry
 
 ![Preview of all printed parts](img/printed-parts.png)
 
@@ -82,8 +82,9 @@ On top of the 3D printable components:
  - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
  - 5 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
- - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
  - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two will work)
+ - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
+ - 6 x zip ties, small ones will do
  - 1 x joystick case (Saitek X45 stick part - or print it yourself)
  - 1 x RGB LED (WS2812 compatible)
  - 1 x 9.5mm steel ball
@@ -105,6 +106,11 @@ I had two options of the Lock-button. One is a slider switch (currently implemen
 For simple buttons, the following logic could be made. Press and hold Lock-button for a while and all axis will lock onto their current position. Unlock by pressing Lock button once. Double-click Lock-button to switch between secondary mode that redefines all buttons, hat and axis.
 
 ## TO-DO
+
+**Document:**
+
+ - Add button module circuit board picture and cutting instructions
+ - Add cable management picture
 
 **Fix:**
 
