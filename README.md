@@ -10,23 +10,24 @@ This is mostly 3D printable HOTAS throttle for USB.
 
 # Features
 
-This HOTAS throttle has:
+This HOTAS throttle connects as a standard USB joystick to Windows without needing to install any software.
+
+It has:
 
  - 3 axis (throttle, vertical, horizontal) with center detents an all
  - 5 buttons
  - hat switch with 8 directions and press button
  - lock/program button
  - RGB LED indicating state: throttle center (green), locked (red), program (blue)
- - Connect as USB joystick to Windows without needing to install any software
- - USB serial connectivity for debugging and programming
  - high quality mechanical and electro-mechanical components
  - adjustable throttle handle angle (twist) for better ergonomics at different table positioning
+ - host additional USB serial connectivity for debugging and programming
 
 # Design
 
 The design is based on these guidelines:
 
- - all buttons and knobs must be reachable without moving the palm of the hand
+ - all buttons and knobs must be reachable without moving the palm on the hand
  - smooth and precise throttle operation
  - angled design for better ergonomics to miminize stress of the wrist and arm
  - parameterized design for tweaking ergonomics and control placement
@@ -42,9 +43,11 @@ All 3D printable parts are designed using OpenSCAD and I printed them using my P
 
 Some parts require or benefit from post-print processing:
 
- - drill the five button holes with e.g. 8.5mm drill to make the hole smooth and buttons work smoother
+ - drill the five button holes with e.g. 8.5mm drill to make the hole walls smooth and the buttons will work smoother
  - some screw holes may benefit from drilling for easier fit
  - throttle center detent hole could be drilled bigger for stronger detent or cone shaped with a lerger drill head for smoother detent exit/entry
+
+![Preview of all printed parts](img/printed-parts.png)
 
 Connect the wires like this to match the code:
 
@@ -52,19 +55,21 @@ Connect the wires like this to match the code:
 
 ## Firmware
 
-Directory **firmware** contains the code for Arduino. I has been tested with Arduino 1.8.9 on Teensy LC with USB Type **Serial + Keyboard + Mouse + Joystick**. You also need to have/install Bounce2 and FastLED libraries. There is also prebuilt hex-file for Teensy LC there.
+Directory **firmware** contains the code for Arduino. I has been tested with Arduino 1.8.9 on Teensy LC with USB Type **Serial + Keyboard + Mouse + Joystick**. You also need to have/install **Bounce2** and **FastLED** libraries. Prebuilt hex-file for Teensy LC are also located in the directory.
 
 ## Other Build Notes
 
-Lighly lube the two metal rails, just like you do your 3D printer rails.
+Lighly lube the two metal rails, just like you would do for your 3D printer rails.
 
 Ligtly lube the ball spring plunger with silicone based (or other plastic friently lube) for smoother throttle movement and less noise.
 
 The right side of the case top that has the center detent - to get smoother and less noisy throttle movement:
 
- - 3D print it so that the last layer is printed in the same direction as the ball moves! E.g. in Prusa slicer, I rotated this part 45 degrees before printing
  - apply little silicone lube spray to where the ball spring plunger meets the plastic
- 
+ - 3D print it so that the last layer is printed in the same direction as the ball moves! E.g. in Prusa slicer, I rotated this part 45 degrees before printing - see the pic below
+
+![Correct layer print direction for right cover top](img/slice-advice-throttle-cover-correct.png)
+
 The X/Y potentiometers' metal shafts I got required good lubing (e.g. CRC Elektro or teflon spray). They were quite stiff to turn, but lubing them made a big difference. I didn't have this sort of issue with other pots I had, but since I wanted ones with a center detent built-in, had to go with these.
 
 # Parts List
@@ -77,10 +82,12 @@ On top of the 3D printable components:
  - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
  - 5 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
- - 2 x linear bearings 8x15x45 (LM8LUU)
- - 1 x linear motion rod 8mm (cut in two 168mm pieces)
+ - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
+ - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two will work)
  - 1 x joystick case (Saitek X45 stick part - or print it yourself)
  - 1 x RGB LED (WS2812 compatible)
+ - 1 x 9.5mm steel ball
+ - 1 x steel spring of e.g. 4.5x22mm (one from a regular ball point pen will work well)
  - some generic circuit board (0.1" / 2.54mm pin pitch)
  - wires
  - screws (2.5mm and 3mm)
@@ -88,6 +95,8 @@ On top of the 3D printable components:
 The Teensy LC can quite easily be replaced with any Arduino compatible device with USB connectivity and enough pins. With more coding effort any USB capable micro controller that fits the case could also do.
 
 The RGB LED and slide switch (lock/program) are fully optional. The multi-directional hat switch can also easily be left out, replaced with a simple switch or with a similar hat switch.
+
+The steel ball and spring are used to make the center detent for the throttle. Different size ball and spring can be used by modifying the printed *BallSpringPlunger* parameters in the OpenSCAD files.
 
 ## Lock/Program
 
@@ -99,8 +108,8 @@ For simple buttons, the following logic could be made. Press and hold Lock-butto
 
 **Fix:**
 
- - Make printable bottom case (now reusing Saitek X45 throttle case)
- - Make case and rod supports to both ends with exact correct rod separation
+ - Make printable bottom case (now reusing bottom part of Saitek X45 joystick case)
+ - Make case and rod supports to both ends with exact correct rod separation and height
  - Add Lock-switch place to handle print
  - Cable insert cut into the handle shaft
  - Cleanup 3D code
@@ -109,7 +118,8 @@ For simple buttons, the following logic could be made. Press and hold Lock-butto
 
  - Easily interchangeable detent disks! Some games can use more or less detents at diffent positions (e.g. no detents at all, 50% for Elite, at 75% for jet plane afterburner, 30% for propeller plane approach and 60% for transition flight, etc.)
  - Emboss button and other control names to thumb plate or make way to attach printable labels/sheet
- - Add two buttons to front and lower thumb
+ - Add two buttons to front and lower thumb - can be less accessible than the 5 current ones - handy for less frequently used functions in a game
+ - Add one or two more axis - can be in less accessible locations than the X/Y pots - these come handy in flight simulators
  - Add a place for the lights so they can be seen
  - Turn LEDs off when computer is sleeping
  - Curvier case cover near to player for better ergonomics when the throttle is placed nearer to the table edge (in certain positions mid-arm may rub against the case cover)

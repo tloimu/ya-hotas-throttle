@@ -10,6 +10,7 @@ include <knobs.scad>;
 module HatSwitch() { Alps688RKJXL100401V(); }
 module YAxisPot(cavityOnly=false) { PotentiometerBournsBIP160(cavityOnly=cavityOnly); }
 module XAxisPot(cavityOnly=false) { rotate([0,0,180]) PotentiometerBournsBIP160(flip=true,cavityOnly=cavityOnly); }
+XYPotKnobSkirt = 3;
 module XPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
 module YPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
 

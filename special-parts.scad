@@ -75,6 +75,8 @@ module HatSwitchX45Holes(screws=true)
 }
 
 
+BallSpringPlungerBallPartOffsetZ = 9.5 - 1/2;
+BallSpringPlungerSpringPartOffsetZ = -BallSpringPlungerBallPartOffsetZ;
 module BallSpringPlunger(ball_diameter = 9.5, spring_diameter = 4.5, spring_length = 19, ball_extrusion_ratio = 0.20, springPart=true, ballPart=true)
 {
     thickness = 1;

@@ -187,18 +187,19 @@ module ShaftAndBase(length, intrusion, handle_base_height = 5, handle_base_width
 // Throttle axis holders
 // --------------------------
 
+ThrottleAxisHolderOffsetX = 3;
 module ThrottleAxisHolder()
 {
 	difference()
 	{
-		translate ([-3,3.5,12])
+		translate ([-ThrottleAxisHolderOffsetX,3.5,12])
 		cube ([18,8,2]);
-		translate([15-2-2.5,3.5+4,1])
+		translate([13-2.5,3.5+4,1])
 		cylinder(d=3.5,h=20);
 	}
 	difference(convexity=10)
 	{
-		translate([-3,-1.5,0])
+		translate([-ThrottleAxisHolderOffsetX,-1.5,0])
 		sheet_cone(x=7, y1=18, y2=8, h=12);
 
 		translate([0.5,14,3])

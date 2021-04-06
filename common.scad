@@ -363,6 +363,7 @@ module SwitchButton(d=8, h=7, cavityOnly=false)
 	}
 }
 
+SwitchButtonBallOffsetZ = 1.2;
 module SwitchButtonBall(d=8, h=7)
 {
 	difference()

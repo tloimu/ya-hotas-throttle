@@ -7,6 +7,7 @@ module hatKnob()
 {
     width = 9;
     step_multiplier = 3.5;
+    translate([0,0,-(6-2*1.6-0.2)])
 	difference()
 	{
         union()
@@ -36,7 +37,6 @@ module hatKnob()
             cube([3,3,3.6]);
         }
 	}
-
 }
 
 // Kobs and knob holes (D/T)
