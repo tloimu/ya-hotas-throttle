@@ -1,10 +1,10 @@
-# My HOTAS Throttle
+# Yet-Another HOTAS Throttle (YAHT)
 
-This is mostly 3D printable HOTAS throttle for USB.
+This is mostly 3D printable HOTAS throttle game controller for USB.
 
 ![Full Preview](img/full-preview.png)
 
-**The photo (don't mind the colors - this is first fully working build)**
+**The photo (don't mind the colors - this is the first fully working build)**
 
 ![Full Photo](img/full-photo.png)
 
@@ -55,7 +55,7 @@ Connect the wires like this to match the code:
 
 ## Firmware
 
-Directory **firmware** contains the code for Arduino. I has been tested with Arduino 1.8.9 on Teensy LC with USB Type **Serial + Keyboard + Mouse + Joystick**. You also need to have/install **Bounce2** and **FastLED** libraries. Prebuilt hex-file for Teensy LC are also located in the directory.
+Directory **firmware** contains the code for Arduino. I has been tested with Arduino 1.8.9 on Teensy LC with USB Type **Serial + Keyboard + Mouse + Joystick**. You also need to have/install **Bounce2** and **FastLED** libraries. Prebuilt hex-file for Teensy LC is also located in the directory.
 
 ## Other Build Notes
 
@@ -72,11 +72,13 @@ The right side of the case top that has the center detent - to get smoother and 
 
 The X/Y potentiometers' metal shafts I got required good lubing (e.g. CRC Elektro or teflon spray). They were quite stiff to turn, but lubing them made a big difference. I didn't have this sort of issue with other pots I had, but since I wanted ones with a center detent built-in, had to go with these.
 
+This build does not use a keyboard diode matrix as Teensy LC has enough pins for all the current design's pots and switches. And still has some extra room available. For other Arduino boards with less pins, you would need to make a keyboard diode matrix and change the software to get the button states e.g. via **Keypad** Arduino library.
+
 # Parts List
 
 On top of the 3D printable components:
 
- - 1 x Teensy LC
+ - 1 x Teensy LC (or another Arduino board with enough pins)
  - 2 x 10kohm LIN pot (Bourns BI P160 with center detent e.g. KNOC-model)
  - 1 x 100mm travel 10kohm lin slide pot (Bourns PS100 B 10K 0E)
  - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
