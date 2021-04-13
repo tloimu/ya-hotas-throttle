@@ -4,7 +4,7 @@ This is mostly 3D printable HOTAS throttle game controller for USB.
 
 ![Full Preview](img/full-preview.png)
 
-**The photo (don't mind the colors - this is the first fully working build)**
+**A photo of an actual build (don't mind the colors - this is the first fully working build)**
 
 ![Full Photo](img/full-photo.png)
 
@@ -32,6 +32,7 @@ The design is based on these guidelines:
  - angled design for better ergonomics to miminize stress of the wrist and arm
  - parameterized design for tweaking ergonomics and control placement
  - allow some key build-time mechanical tuning options in case printing precision is not perfect
+ - modularity for better flexibility and extensibility
 
 The design is mostly parametrisized so that you can customize it to fit e.g. a bit larger hands better or different angles. This one is optimized for my smaller hands (e.g. Saitek X45 throttle was too big for my hands) so that I can reach all knobs and switches without moving my palm.
 
@@ -52,6 +53,8 @@ Some parts require or benefit from post-print processing:
 Connect the wires like this to match the code:
 
 ![Circuit Diagram](img/throttle-circuit-tinycad.png)
+
+*Note: The components within the dashed region in the right of the circuit diagram are not currently in the physical build. They only exist in the code and are for future extensions.*
 
 ## Firmware
 
@@ -84,16 +87,17 @@ On top of the 3D printable components:
  - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
  - 5 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
- - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two will work)
+ - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two)
  - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
- - 6 x zip ties, small ones will do
+ - 6 x zip ties for attaching the bearings and do cable management, small ones will do
  - 1 x joystick case (Saitek X45 stick part - or print it yourself)
  - 1 x RGB LED (WS2812 compatible)
  - 1 x 9.5mm steel ball
  - 1 x steel spring of e.g. 4.5x22mm (one from a regular ball point pen will work well)
  - some generic circuit board (0.1" / 2.54mm pin pitch)
  - wires
- - screws (2.5mm and 3mm)
+ - N x screws (2.5mm and 3mm) for plastic
+ - 2 x screws 3mm for attaching the rods from one of their ends to the case
 
 The Teensy LC can quite easily be replaced with any Arduino compatible device with USB connectivity and enough pins. With more coding effort any USB capable micro controller that fits the case could also do.
 
@@ -121,6 +125,8 @@ For simple buttons, the following logic could be made. Press and hold Lock-butto
  - Add Lock-switch place to handle print
  - Cable insert cut into the handle shaft
  - Cleanup 3D code
+ - Turn the LEDs off when computer is sleeping
+ - Thicker handle case and slightly better interlocking edges between the main and thumb sections
 
 **New features:**
 
@@ -129,5 +135,12 @@ For simple buttons, the following logic could be made. Press and hold Lock-butto
  - Add two buttons to front and lower thumb - can be less accessible than the 5 current ones - handy for less frequently used functions in a game
  - Add one or two more axis - can be in less accessible locations than the X/Y pots - these come handy in flight simulators
  - Add a place for the lights so they can be seen
- - Turn LEDs off when computer is sleeping
  - Curvier case cover near to player for better ergonomics when the throttle is placed nearer to the table edge (in certain positions mid-arm may rub against the case cover)
+ - Lower design
+
+ **Other ideas:**
+
+ - Second Teensy into the case; the Teensy in the handle picks the handle buttons and pots and connects with four wires only (e.g. I2C + power) to the case where the USB connectivity is. This would eliminate a couple of wires beteen the case and the moving handle while allowing further extensions e.g. case buttons, lights or even displays
+ - DC motor with pulleys (e.g. GT2) on throttle axis for fully dynamic, programmable detents and centering forces controlled by the Teensy and driven by a H-bridge module. (Real force feedback would also be possible, but Windows games usually support only one force feedback device and that usually is the joystick)
+ - Modular connectors on the outside of the case for attaching e.g. keypads or macro keyboards
+ 
