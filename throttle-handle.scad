@@ -137,7 +137,15 @@ module xyPots()
         rotate (thumbPlateAngle)
         translate ([thumbHat.x, thumbHat.y, thumbHat.z + thumbLength-thumbPlateDepth])
         rotate([0,180,thumbHat[3]])
-        HatSwitch();
+        union()
+        {
+            HatSwitch();
+            if (showKnobs)
+                moveZ(-9)
+                flipY()
+                turnZ(45)
+                hatKnob();
+        }
     }
 }
 
