@@ -9,29 +9,43 @@ module TeensyPlusPlus()
     cube ([9,8,4]);
 }
 
-module SlidePotentiometer100()
+module SlidePotentiometer(range=100, leverWidth=8.0, leverHeight=20,
+	sliderEndLength=10, sliderHeight=6.4,
+	value=0.5, alignTop=false, alignPin=false, alignLever=false, alignValueMax=false)
 {
-    lever_range = 100;
-    lever_width = 8.0;
-    lever_thickness = 1.0;
-    lever_height = 20;
-    slider_length = 128;
+    slider_length = range + leverWidth + 2 * sliderEndLength;
     slider_width = 8.3;
-    slider_height = 6.4;
-    lever_offset = (slider_length - lever_range + lever_width) / 2;
-    // Slider base
-    difference ()
-    {
-    cube ([slider_length,slider_width,slider_height]);
-    translate ([lever_offset, (slider_width-lever_thickness)/2, 1])
-        cube ([lever_range,lever_thickness,slider_height]);
-    // Screw places
-    translate ([slider_length - 4, slider_width/2, slider_height - 3]) cylinder (r1=1.5, r2=1.5, h=4);
-    translate ([4, slider_width/2, slider_height - 3]) cylinder (r1=1.5, r2=1.5, h=3);
-    }
-    // Lever
-    translate ([lever_offset + lever_range/2, (slider_width-lever_thickness)/2, 0])
-    cube ([lever_width,lever_thickness,lever_height]);
+    lever_thickness = 1.0;
+	pin_length = 4.4;
+    lever_groove_offset = (slider_length - range - slider_width) / 2;
+	lever_offset = sliderEndLength + range * value;
+
+	alignZ = alignTop ? -sliderHeight : (alignPin ? pin_length : 0);
+	alignX = alignValueMax ? -sliderEndLength : 0;
+	alignY = alignLever ? -slider_width/2 : 0;
+	translate([alignX, alignY, alignZ])
+	{
+		// Slider base
+		difference ()
+		{
+			cube ([slider_length,slider_width,sliderHeight]);
+			translate ([lever_groove_offset, (slider_width-lever_thickness*2)/2, 1])
+				cube ([range + slider_width,lever_thickness*2,sliderHeight]);
+			// Screw places
+			translate ([slider_length - 4, slider_width/2, sliderHeight - 3]) cylinder (d=3, h=4);
+			translate ([4, slider_width/2, sliderHeight - 3]) cylinder (d=3, h=4);
+		}
+		// Lever
+		translate ([lever_offset, (slider_width-lever_thickness)/2, 0])
+		cube ([leverWidth,lever_thickness,leverHeight]);
+		// Pins
+		color("white") translate ([0, 0, -pin_length])
+		{
+			translate ([0, slider_width-1, 0]) cube ([0.5,1,pin_length]); // +V
+			translate ([slider_length-0.5, 0, 0]) cube ([0.5,1,pin_length]); // GND
+			translate ([slider_length-0.5, slider_width-1, 0]) cube ([0.5,1,pin_length]); // R
+		}
+	}
 }
 
 module PotentiometerBourns95A1()

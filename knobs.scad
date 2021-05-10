@@ -1,6 +1,5 @@
 include <common.scad>;
-
-$fn = $preview ? 40 : 100;
+include <throttle-parameters.scad>;
 
 // Recommend 0.20mm layer on 0.4mm nozzle
 module hatKnob()

@@ -765,3 +765,29 @@ module spring(d,l)
 {
 	%cylinder(d=d, h=l);
 }
+
+module cutRectRimZ(x, y, thickness, tolerance=0.0)
+{
+	difference()
+	{
+		translate([-thickness, -thickness, -0.1])
+		cube([x + thickness * 2, y + thickness * 2, thickness + 0.2]);
+
+		translate([tolerance, tolerance, -1])
+		cube([x ,y, thickness + 2]);
+	}
+}
+
+module roundCube(d=3, size=[1, 1, 1], offset=[0, 0, 0], extended=0)
+{
+	intersection()
+	{
+		children();
+		size2 = [size.x - 2*d + offset.x, size.y - 2*d + offset.y, size.z - 2*d + offset.z];
+		minkowski()
+		{
+			translate(-offset) translate([d, d, d]) cube(size2);
+			sphere(d + extended, $fn=50);
+		}
+	}
+}

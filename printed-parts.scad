@@ -3,88 +3,77 @@ include <throttle-base.scad>;
 include <throttle-handle.scad>;
 include <throttle-case.scad>;
 
-drawOtherParts = false;
-separateHandle = true;
-
-handleSeparation = separateHandle ? 15 : 0;
-
+throttle_slider_height = 6.4;
+throttle_slider_end_length = 10;
 handle_radius = 30;
-shaft_intrusion = caseThickness + 1;
-shaft_length = 35;
 
-// Lay out all printable parts on the same level
+dist = 5;
 
-// Parts inside
-ShaftAndBase(shaft_length, shaft_intrusion);
-moveX(60)
+// Unless otherwise mentioned, 0.30mm layer on 0.40mm nozzle is sufficient
+
+module AllPrintableParts()
 {
-    moveZ(main_throttle_lever_height) flipY() MainThrottleLever();
-    moveX(30)
-    {
-        moveZ(base_height) flipY() BasePrinted();
-        moveX(45)
-        {
-            moveZ(ThrottleAxisHolderOffsetX) turnY(-90) ThrottleAxisHolder();
-            moveX(20)
-            {
-                moveZ(ThrottleAxisHolderOffsetX) turnY(-90) ThrottleAxisHolder();
-                moveX(15)
-                {
-                    moveZ(backstop_offset_z) turnY(90) Backstop();
-                    moveX(30) moveZ(BallSpringPlungerBallPartOffsetZ) flipY()
-                    BallSpringPlunger(springPart=false);
-                    moveX(45) moveZ(BallSpringPlungerSpringPartOffsetZ)
-                    BallSpringPlunger(ballPart=false);
-                }
-            }
-        }
-    }
-}
+    CaseBottom();
 
-// Case and handle
-moveY(90)
-{
-    moveX(120)
+    moveY(case_outside.y/2 + dist)
+    flipY() moveZ(-case_depth-case_cover_height) CaseCover(right=true, left=false);
+
+    moveY(- case_outside.y/2 - dist)
+    flipY() moveZ(-case_depth-case_cover_height) CaseCover(right=false, left=true);
+
+    moveX(case_outside.x + dist)
     {
-        moveZ(handle_case_print_offset_z) handleCase();
-        moveY(0) moveX(-50)
+        moveY(-base_width - handle_radius)
         {
-            moveX(-45)
-            moveY(-20)
-            moveZ(thumb_print_offset_z) 
-            turnX(thumbPlateAngle.x) turnY(180 - thumbPlateAngle.y)
-            handleThumbPart();
-            moveX(80)
+            flipY() moveZ(-base_height)
+            BasePrinted(leverDistance=throttle_lever_distance);
+
+            moveX(-base_length - dist)
+            ShaftAndBase(shaft_length, shaft_intrusion);
+
+            moveY(base_width)
+            moveX(-base_length)
+            moveZ(-base_height + 2) 
             {
+                ThrottleAxisHolder(sliderPart=true);
+                moveX(-2*dist) ThrottleAxisHolder(sliderPart=true);
+
+                moveX(-25) moveZ(case_bottom + base_height + 1)
                 flipY()
-                moveY(140)
-                moveZ(-2*case_cover_height - caseThickness/2)
-                {
-                    CaseCover(left=true, right=false);
-                    moveY(-130) moveX(150)
-                    // Turn the right cover to print the correct way - your slicer may do this differently, so check it
-                    turnZ(-45) CaseCover(left=false, right=true);
-                }
+                BallSpringPlunger2(ballPart=true, springPart=false);
             }
         }
+
+        moveX(-70) moveY(60)
+        PrintableKnobsAndButtons();
+
+        moveZ(handle_case_print_offset_z)
+        handleCase();
+
+        moveY(handle_radius*2 + dist)
+        moveZ(thumb_print_offset_z) 
+        turnX(thumbPlateAngle.x) turnY(180 - thumbPlateAngle.y)
+        handleThumbPart();
     }
 }
 
 // Knobs and buttons (Recommend 0.20mm layer on 0.40mm nozzle)
-moveY(-50)
+module PrintableKnobsAndButtons()
 {
     moveZ(12) flipY() XPotKnob();
-    moveX(30)
+    moveY(30)
     moveZ(12) flipY() YPotKnob();
-    moveX(50)
+    moveX(20)
     {
         flipY() hatKnob();
         moveX(15)
         for (i=[0:1:4])
         {
-            moveX(15*i)
+            moveY(15*i)
             moveZ(SwitchButtonBallOffsetZ)
             SwitchButtonBall();
         }
     }
 }
+
+AllPrintableParts();

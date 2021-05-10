@@ -2,6 +2,7 @@ include <common.scad>;
 include <special-parts.scad>;
 include <commercial-parts.scad>;
 include <knobs.scad>;
+include <throttle-parameters.scad>;
 
 // --------------------------------------------------
 // Some part definitions for easier switch'n'replace
@@ -21,14 +22,10 @@ module YPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
 solidOnly = false; // set true for faster preview rendering
 showHandle = true;
 showThumb = true;
-drawOtherParts = true; // draw also non-printable parts like pots, switches etc.
-showKnobs = true;
-showHandleInsides = true;
 
 // Effective values based on the above settings and rendering mode
 
-thumbSeparation = showHandleInsides ? 10 : -4;
-$fn = $preview ? 30 : 100;
+thumbSeparation = separation;
 fnForMinkowskiHull = $preview ? 10 : 15;
 draw_other_parts = $preview ? drawOtherParts : false;
 

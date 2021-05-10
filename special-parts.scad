@@ -77,7 +77,8 @@ module HatSwitchX45Holes(screws=true)
 
 BallSpringPlungerBallPartOffsetZ = 9.5 - 1/2;
 BallSpringPlungerSpringPartOffsetZ = -BallSpringPlungerBallPartOffsetZ;
-module BallSpringPlunger(ball_diameter = 9.5, spring_diameter = 4.5, spring_length = 19, ball_extrusion_ratio = 0.20, springPart=true, ballPart=true)
+module BallSpringPlunger(ball_diameter = 9.5, spring_diameter = 4.5, spring_length = 19, ball_extrusion_ratio = 0.20,
+    springPart=true, ballPart=true)
 {
     thickness = 1;
     gap = 0.5;
@@ -163,6 +164,91 @@ module BallSpringPlunger(ball_diameter = 9.5, spring_diameter = 4.5, spring_leng
         {
             translate([0,0,-thickness/2])
             cube([ball_case_outer_d, 2*ball_case_outer_d, thickness], center = true);
+            translate([0,0,-thickness-0.1])
+            {
+                cylinder(d=ball_case_inner_d,h=thickness+0.2);
+
+                translate([0,ball_case_outer_d- screw_d,0])
+                cylinder(d=screw_d,h=thickness+0.2);
+                translate([0,-(ball_case_outer_d- screw_d),0])
+                cylinder(d=screw_d,h=thickness+0.2);
+            }
+        }
+    }
+}
+
+
+
+module BallSpringPlunger2(ball_diameter = 9.5, spring_diameter = 4.5, spring_length = 19, ball_extrusion_ratio = 0.20,
+    springPart=true, ballPart=true)
+{
+    thickness = 1;
+    gap = 0.5;
+    ball_out = ball_extrusion_ratio * ball_diameter;
+    ball_high = ball_diameter*(1-ball_extrusion_ratio) + gap;
+    ball_case_inner_top = ball_diameter - thickness + gap;
+    ball_case_inner_d = ball_diameter + gap;
+    ball_case_outer_d = ball_case_inner_d + thickness;
+    spring_case_inner_d = spring_diameter + gap;
+    spring_case_outer_d = spring_case_inner_d + thickness;
+    screw_d = 2;
+
+    if (draw_other_parts == true)
+    {
+        %translate([0, 0, ball_out])
+        {
+            // spring
+            translate([0, 0, ball_diameter/2])
+            spring(d=spring_diameter, l=spring_length);
+            // ball
+            color("silver") sphere(d=ball_diameter);
+        }
+    }
+
+    if (springPart == true)
+        {
+        spring_tube_length = spring_length - ball_out - gap;
+        translate([0, 0, ball_case_inner_top])
+        {
+            // spring tube and its bottom
+            tubeD(spring_case_outer_d, spring_case_inner_d, spring_tube_length);
+            translate([0, 0, spring_tube_length]) tubeD(spring_case_outer_d, 2*gap, thickness);
+
+            // connector plate
+            difference()
+            {
+                connector_plate_thickness = 3;
+                translate([0, 0, connector_plate_thickness/2])
+                cube([ball_case_outer_d, 2*ball_case_outer_d + 1, connector_plate_thickness], center = true);
+                translate([0,0,-0.1])
+                {
+                    cylinder(d=spring_case_inner_d,h=connector_plate_thickness+0.2);
+                    
+                    translate([0,ball_case_outer_d- screw_d,0])
+                    cylinder(d=screw_d,h=3+0.2);
+                    translate([0,-(ball_case_outer_d- screw_d),0])
+                    cylinder(d=screw_d,h=3+0.2);
+                }
+            }
+        }
+    }
+    
+    if (ballPart == true)
+    {
+        // ball tube
+        tubeD(ball_case_outer_d, ball_case_inner_d, ball_case_inner_top);
+        difference()
+        {
+            tubeD(ball_case_outer_d, 0, thickness);
+            translate([0, 0, ball_out]) sphere(d=ball_diameter + gap);
+        }
+
+        // connector plate
+        translate([0,0,ball_case_inner_top])
+        difference()
+        {
+            translate([0,0,-thickness/2])
+            cube([ball_case_outer_d, 2*ball_case_outer_d + 1, thickness], center = true);
             translate([0,0,-thickness-0.1])
             {
                 cylinder(d=ball_case_inner_d,h=thickness+0.2);

@@ -1,16 +1,6 @@
-# Yet-Another HOTAS Throttle (YAHT)
+# Yet-Another HOTAS Throttle (YA-HOTAS-THROTTLE)
 
-This is mostly 3D printable HOTAS throttle game controller for USB.
-
-![Full Preview](img/full-preview.png)
-
-**A photo of an actual build (don't mind the colors - this is the first fully working build)**
-
-![Full Photo](img/full-photo.png)
-
-# Features
-
-This HOTAS throttle connects as a standard USB joystick to Windows without needing to install any software.
+This 3D printable HOTAS throttle game controller. It connects as a standard USB joystick to Windows without needing to install any software.
 
 It has:
 
@@ -22,6 +12,18 @@ It has:
  - high quality mechanical and electro-mechanical components
  - adjustable throttle handle angle (twist) for better ergonomics at different table positioning
  - host additional USB serial connectivity for debugging and programming
+
+**Complete Design Explosion View**
+
+![Full Preview](img/full-preview.png)
+
+**A photo of an actual build (don't mind the colors - this is a fully working prototype build)**
+
+![Full Photo](img/full-photo.jpg)
+
+**And when fully opened**
+
+![Fully Opened Photo](img/fully-opened.jpg)
 
 # Design
 
@@ -48,6 +50,8 @@ Some parts require or benefit from post-print processing:
  - some screw holes may benefit from drilling for easier fit
  - throttle center detent hole could be drilled bigger for stronger detent or cone shaped with a bit larger drill head for smoother detent exit/entry
 
+Below is an illustration of all printable parts.
+
 ![Preview of all printed parts](img/printed-parts.png)
 
 Connect the wires like this to match the code:
@@ -55,6 +59,17 @@ Connect the wires like this to match the code:
 ![Circuit Diagram](img/throttle-circuit-tinycad.png)
 
 *Note: The components within the dashed region in the right of the circuit diagram are not currently in the physical build. They only exist in the code and are for future extensions.*
+
+Below are some photos of the assembly
+
+![Fully Opened Photo](img/fully-opened.jpg)
+
+![Fitting Everything In the Handle](img/handle-insides.jpg)
+
+The cable management is important to make the throttle handle move smoothly and not move on its own at any position due wires pushing it.
+
+![Handle Cable Management](img/handle-cable.jpg)
+
 
 ## Firmware
 
@@ -79,25 +94,25 @@ This build does not use a keyboard diode matrix as Teensy LC has enough pins for
 
 # Parts List
 
-On top of the 3D printable components:
+On top of the 3D printable components, you need
 
+ - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two)
+ - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
  - 1 x Teensy LC (or another Arduino board with enough pins)
  - 2 x 10kohm LIN pot (Bourns BI P160 with center detent e.g. KNOC-model)
- - 1 x 100mm travel 10kohm lin slide pot (Bourns PS100 B 10K 0E)
+ - 1 x 100mm travel 10kohm LIN slide pot (Bourns PS100 B 10K 0E)
  - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
  - 5 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
- - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two)
- - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
+ - some generic circuit board (0.1" / 2.54mm pin pitch)
+ - N x screws (2.5mm and 3mm) for plastic - for case cover, handle thumb section and internal parts
+ - 2 x screws 3mm for attaching the rods from one of their ends to the case
+ - 2 x screws 2mm for attaching the slide potentiometer
  - 6 x zip ties for attaching the bearings and do cable management, small ones will do
- - 1 x joystick case (Saitek X45 stick part - or print it yourself)
+ - wires
  - 1 x RGB LED (WS2812 compatible)
  - 1 x 9.5mm steel ball
  - 1 x steel spring of e.g. 4.5x22mm (one from a regular ball point pen will work well)
- - some generic circuit board (0.1" / 2.54mm pin pitch)
- - wires
- - N x screws (2.5mm and 3mm) for plastic
- - 2 x screws 3mm for attaching the rods from one of their ends to the case
 
 The Teensy LC can quite easily be replaced with any Arduino compatible device with USB connectivity and enough pins. With more coding effort any USB capable micro controller that fits the case could also do.
 
@@ -116,14 +131,10 @@ For simple buttons, the following logic could be made. Press and hold Lock-butto
 **Document:**
 
  - Add button module circuit board picture and cutting instructions
- - Add cable management picture
 
 **Fix:**
 
- - Make printable bottom case (now reusing bottom part of Saitek X45 joystick case)
- - Make case and rod supports to both ends with exact correct rod separation and height
  - Add Lock-switch place to handle print
- - Cable insert cut into the handle shaft
  - Cleanup 3D code
  - Turn the LEDs off when computer is sleeping
  - Thicker handle case and slightly better interlocking edges between the main and thumb sections
@@ -135,8 +146,6 @@ For simple buttons, the following logic could be made. Press and hold Lock-butto
  - Add two buttons to front and lower thumb - can be less accessible than the 5 current ones - handy for less frequently used functions in a game
  - Add one or two more axis - can be in less accessible locations than the X/Y pots - these come handy in flight simulators
  - Add a place for the lights so they can be seen
- - Curvier case cover near to player for better ergonomics when the throttle is placed nearer to the table edge (in certain positions mid-arm may rub against the case cover)
- - Lower design
 
  **Other ideas:**
 

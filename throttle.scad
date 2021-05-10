@@ -3,46 +3,53 @@ include <throttle-base.scad>;
 include <throttle-handle.scad>;
 include <throttle-case.scad>;
 
-separateHandle = true;
-
-handleSeparation = separateHandle ? 15 : 0;
-
-handle_radius = 30;
-shaft_intrusion = caseThickness + 1;
-shaft_length = 35;
+throttle_slider_height = 6.4;
+throttle_slider_end_length = 10;
 
 // Put it all together for a grand view of it all
 
-module All()
-{
-    rotate([0,0,180])
-    translate ([0,0,case_bottom]) BasePrinted();
-    rotate([0,0,180])
-    translate ([-17.5,base_width/2,12+case_bottom]) MainThrottleLever();
-    translate ([0,0,case_bottom]) Tracks();
-    
+module Throttle()
+{   
     color("DimGray") CaseBottom();
-    %CaseCover();
-    translate ([-(case_inside/2)+case_bottom+12, -case_inside/2 + 29, 9.5 + case_thickness])
+
+    moveY(3*separation) moveZ(separation) CaseCover(right=true, left=false);
+    moveY(-3*separation) moveZ(separation) CaseCover(right=false, left=true);
+    
+    if (draw_other_parts == true)
     {
-        translate([0,0,5.6])
-        SlidePotentiometer100();
-        rotate([0,0,180])
-        translate([-134.5,-11.6,0])
-        ThrottleAxisHolder();
-        translate([-6.5,-3.4,0])
-        ThrottleAxisHolder();
+        translate ([0,0,case_bottom])
+        Tracks(-case_inside.x/2 + throttle_offset + throttle_value * throttle_travel);
+
+        color("Snow")
+        moveX(throttle_offset)
+        translate ([-case_inside.x/2 - throttle_lever_width/2, -base_width/2 - throttle_lever_distance, case_bottom])
+        {   
+            SlidePotentiometer(sliderEndLength=throttle_slider_end_length, sliderHeight=throttle_slider_height, leverHeight=20,
+                value=throttle_value, alignPin=true, alignLever=true, alignValueMax=true);
+        }
     }
 
-    translate ([0,0,base_height + case_bottom]) ShaftAndBase(shaft_length, shaft_intrusion);
+    color("Silver")
+    moveX(throttle_offset + throttle_value * throttle_travel - case_inside.x/2)
+    {
+        translate ([0,0,case_bottom])
+        BasePrinted(leverDistance=throttle_lever_distance);
 
-    translate ([0,-25,base_height + case_bottom + shaft_length + 18 - shaft_intrusion + handleSeparation])
-    rotate([handleAngle-90,0,0])
+        translate ([0,0,case_bottom + base_height + separation])
+        ShaftAndBase(shaft_length, shaft_intrusion);
+        moveY(base_width/2 + 3) moveZ(case_bottom + base_height + 9) flipY() turnZ(-90) BallSpringPlunger2(ballPart=true, springPart=false);
+    }
+
+    moveX(throttle_offset - case_inside.x/2 - throttle_slider_end_length)
+    translate ([0, -base_width/2 - throttle_lever_distance, case_thickness])
+    {
+        ThrottleAxisHolder(sliderPart=true);
+        moveX(throttle_travel + 2*throttle_slider_end_length)
+        ThrottleAxisHolder(sliderPart=true);
+    }
+
+    moveZ(shaft_length + case_bottom + base_height + 4*separation + shaft_connector_height)
+    moveY(-25)
+    turnX(handleAngle-90)
     handle();
-        
-    translate ([case_inside/2 - 23,-40,6 + case_thickness]) Backstop();
-
-    moveY(base_width/2 + 6) moveZ(35) flipY() turnZ(-90) BallSpringPlunger(); // center detent actuator
 }
-
-All();
