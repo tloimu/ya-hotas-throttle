@@ -100,7 +100,7 @@ On top of the 3D printable components, you need
  - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
  - 1 x Teensy LC (or another Arduino board with enough pins)
  - 2 x 10kohm LIN pot (Bourns BI P160 with center detent e.g. KNOC-model)
- - 1 x 100mm travel 10kohm LIN slide pot (Bourns PS100 B 10K 0E)
+ - 1 x 100mm travel 10kohm LIN slide pot (BI Technologies/TT Electronics PS100 B 10K 0E)
  - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
  - 5 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
