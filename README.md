@@ -126,30 +126,21 @@ I had two options of the Lock-button. One is a slider switch (currently implemen
 
 For simple buttons, the following logic could be made. Press and hold Lock-button for a while and all axis will lock onto their current position. Unlock by pressing Lock button once. Double-click Lock-button to switch between secondary mode that redefines all buttons, hat and axis.
 
-## TO-DO
 
-**Document:**
+# Discussions and Considerations
 
- - Add button module circuit board picture and cutting instructions
+## Pots vs Hall effect vs rotation encodes
 
-**Fix:**
+I did consider using hall sensors or even rotational encoders with belt/pulley system, but eventually found them overly complex to assemble over using simple linear slide potentiometer. We're building these by ourselves and making it all too complex only makes less people (including me) actually build it successfully in quality.
 
- - Add Lock-switch place to handle print
- - Cleanup 3D code
- - Turn the LEDs off when computer is sleeping
- - Thicker handle case and slightly better interlocking edges between the main and thumb sections
+The ones I used here (TT Electronics' PS100) are very smooth, accurate enough and are rated for 100000 cycles while costing only 4-5 euros a piece. So, if they still wear out at some point, just replace it with a new one. It's *your* own build anyway and not something you sell in millions while staying clear of warranty claims.
 
-**New features:**
+Many rotary systems might also require manual calibration every time the machine is restarted as the absolute position is not necessarily known. I've seen some hall sensor joysticks requiring that and I found it an undesired feature.
 
- - Easily interchangeable detent disks! Some games can use more or less detents at diffent positions (e.g. no detents at all, 50% for Elite, at 75% for jet plane afterburner, 30% for propeller plane approach and 60% for transition flight, etc.)
- - Emboss button and other control names to thumb plate or make way to attach printable labels/sheet
- - Add two buttons to front and lower thumb - can be less accessible than the 5 current ones - handy for less frequently used functions in a game
- - Add one or two more axis - can be in less accessible locations than the X/Y pots - these come handy in flight simulators
- - Add a place for the lights so they can be seen
+I also considered using some form of lever system (like is done e.g. in Thrustmaster's throttle unit) and transfer the linear motion into a rotational potentiometer. But they easily come with some mechanical "play". Also, some inherent non-linearity of such construct would have to be compensated in the code.
 
- **Other ideas:**
+## Throttle Handle Twist or Not
 
- - Second Teensy into the case; the Teensy in the handle picks the handle buttons and pots and connects with four wires only (e.g. I2C + power) to the case where the USB connectivity is. This would eliminate a couple of wires beteen the case and the moving handle while allowing further extensions e.g. case buttons, lights or even displays
- - DC motor with pulleys (e.g. GT2) on throttle axis for fully dynamic, programmable detents and centering forces controlled by the Teensy and driven by a H-bridge module. (Real force feedback would also be possible, but Windows games usually support only one force feedback device and that usually is the joystick)
- - Modular connectors on the outside of the case for attaching e.g. keypads or macro keyboards
- 
+The current design allows either fixing the handle in place with a screw or leave the screw out and allow rotating the handle to a location that suits your current sitting position. The fitting of the throttle shaft to the handle is quite stiff on purpose.
+
+It would be relatively easy to add an actual axis to the twist of the handle. Some throttles have a rocker on the front for this. However, I didn't add that here as rudder pedals or joystick with a twisting handle works better. This throttle is *very* smooth and light to operate so asserting any other forces with the same hand would likely interfere with the throttle.
