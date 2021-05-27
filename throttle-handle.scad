@@ -8,9 +8,9 @@ include <throttle-parameters.scad>;
 // Some part definitions for easier switch'n'replace
 // --------------------------------------------------
 
-module HatSwitch() { Alps688RKJXL100401V(); }
-module YAxisPot(cavityOnly=false) { PotentiometerBournsBIP160(cavityOnly=cavityOnly); }
-module XAxisPot(cavityOnly=false) { rotate([0,0,180]) PotentiometerBournsBIP160(flip=true,cavityOnly=cavityOnly); }
+module HatSwitch() { AlpsRKJXM1015004(); }
+module YAxisPot(cavityOnly=false) { PotentiometerBIP160(cavityOnly=cavityOnly); }
+module XAxisPot(cavityOnly=false) { rotate([0,0,180]) PotentiometerBIP160(flip=true,cavityOnly=cavityOnly); }
 XYPotKnobSkirt = 3;
 module XPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
 module YPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
@@ -20,14 +20,13 @@ module YPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
 // ----------------------------------
 
 solidOnly = false; // set true for faster preview rendering
-showHandle = true;
+showHandle = false;//true;
 showThumb = true;
 
 // Effective values based on the above settings and rendering mode
 
 thumbSeparation = separation;
 fnForMinkowskiHull = $preview ? 10 : 15;
-draw_other_parts = $preview ? drawOtherParts : false;
 
 // ----------------------------------
 // Main handle case parameters
@@ -42,8 +41,10 @@ handleAngle = 30;
 handleLength = 60; // Main handle length
 handleBaseHeight = 0; // level of the base connector plate
 
+handleCaseSwitch = [0,0,0];
+
 // Screw locations and depths for connecting main handle and the thumb side piece
-thumb_screws = [ 
+thumbScrews = [ 
 	[[21.7,-20.5, -caseThickness], 2*caseThickness, 20],
 	[[-25,18,-caseThickness], 2*caseThickness, 20],
 	[[25.8,37,-caseThickness], 2*caseThickness, 20]
@@ -56,51 +57,70 @@ thumbPlateDepth = 77;
 thumbPlateAngle = [10, 40, 0];
 thumbTipDepth = 57;
 
-thumb_buttons = [
+backPlateHeight = 6.3 + 0.4; // ???? Added a bit (0.4) of extra to make sure buttons get to move
+
+// Thumb part buttons in the button module
+thumbButtons = [
 	// x,y,d,z
-	[-10.7,-0.5,8,0], // forward
-	[9.7,-0.5,8,0], // back
-	[-0.5,7,8,0], // down
-	[-0.5,-8.2,8,0], // up
-	[9.7,14.7,8,0] // low extra
+	[-10.7,-0.5,8,0, [75, 290]], // forward
+	[9.7,-0.5,8,0, [100, -30, 183]], // back
+	[-0.5,7,8,0, [0, 180]], // down
+	[-0.5,-8.2,8,0, [175, 70]], // up
+	[9.7,14.7,8,0, [30, 150, 260]], // low extra
+	[-10.7-2.54,-0.5+6*2.54,8,0, [285, 30]], // forward extra
 	];
-
-thumbHat = [-2.5, -21, 0, 20-45, 8]; // x,y,z,angle,hole diameter
-
-button_module_supports = [
-	[-12.5,-23],// [-13,-24.5], // left top (hat left)
-	[7.5,-18.5],// [7,-17], // right top (hat right)
-	[7.6,-8.7], // upper right
-	[-3.8,0.7], // center
-	[14.9,5.7], // right
-	[-3.8,18.5] // center low
-	];
-
-back_plate_height = 6.3 + 0.4; // ???? Added a bit (0.4) of extra to make sure buttons get to move
 backPlatePoints = [
-    [4,-14],
-    [18,-10], // back button
-    [18,20], [-7,20], // down button
+/*    [4,-14],
+    [23,-10], // back button
+    [23,20], [-7,20], // down button
     [-17,20], [-17,-3], // forward button
     [-8,-13]
+    */
+    [17,-25],
+    [17, -10],
+    [23, -10], // back button
+    [23,20], [-7,20], // down button
+    [-17-2.54,20], [-17-2.54,-8], // forward button
+    [-12,-8],
+    [-12,-25]
     ];
-backPlateOffset = [-2.5, 1.5, -8]; // x, y, angle
+backPlateOffset = [-5, 0, -8]; // x, y, angle
+//blackPlateRasterOffset=[0,0.7]; // x, y
+blackPlateRasterOffset=[0, 1.6]; // x, y
+buttonModuleSupportDOut=5.2;
+buttonModuleButtonSupports = [
+	[0.8 + 3*2.54, -0.6 - 3*2.54], // upper right
+	[0.8 - 2.54, -0.6], // center
+	[0.8 - 2*2.54, -0.6 + 6*2.54], // down
+	[0.8 + 5*2.54, -0.6 + 3*2.54] // back
+	];
 
-backPlateHatPoints = [
-    [-23,-14],
-    [-23,-18],
-    [-18,-25],
-    [6,-25],
-    [6,-14]
-    ];
-backPlateHatOffset = [-1.8, -0.8, 20]; // x, y, angle
+// Thumb hat switch module
+//thumbHatOffset = [-2, -10, 0]; // x, y, z
+thumbHatOffset = [-3.1, -11.5, 0]; // x, y, z
+thumbHatAngle = [0, 0, -8];
+thumbHat = [-2.5, -11, 0, 45, 9]; // x,y,z,angle,hole diameter
+backPlateHatPoints = [];/*
+    [-16,-5],
+    [-16,-15],
+    [12,-15],
+    [14,-13],
+    [14,-5]
+    ];*/
+backPlateHatRasterOffset = [0.8, 0.2]; // x, y
+buttonModuleHatSupports = [
+	[-5*2.54,-4*2.54+0.4], // hat left
+	[4*2.54,-4*2.54+0.4] // hat right
+	];
+
+thumbButtonsFront = [[8, 0]]; // offset from thumb side bottom, angle
 
 // Axis pots
 axisHoleDiameter = 9.6 + 0.2;
 
 axisYPos = [-3, 31, 0];
 axisYRaiserHeight = 1;
-axisXPos = [27, 30]; // offset from thumb side bottom, angle
+axisXPos = [28, 27]; // offset from thumb side bottom, angle
 axisXRaiserHeight = 4.5;
 axisXRaiserOffset = 0.0;
 
@@ -135,6 +155,7 @@ module xyPots()
         }
 
         rotate (thumbPlateAngle)
+        translate(thumbHatOffset) rotate(thumbHatAngle)
         translate ([thumbHat.x, thumbHat.y, thumbHat.z + thumbLength-thumbPlateDepth])
         rotate([0,180,thumbHat[3]])
         union()
@@ -149,47 +170,170 @@ module xyPots()
     }
 }
 
+plateThickness = 1.6;
+
+module buttonModuleButtons()
+{
+    for (b = thumbButtons)
+    {
+        translate ([b[0],b[1],b[3]-0.05])
+        {
+            color("orange")
+            translate ([0,0,1.5+ (backPlateHeight-6.7)])
+            %SwitchButtonBall();
+        }
+    }
+}
+
+module buttonModuleSprings(d=8, h=backPlateHeight - 2)
+{
+    f = 0.0;
+    color("green")
+    moveZ(-0.9 + f + (backPlateHeight - 6.7))
+    {
+        for (b = thumbButtons)
+        {
+            translate ([b[0],b[1],b[3]])
+            {
+                moveZ(+0.7-f)
+                tubeD(din=d-1, dout=d+2, h=0.4);
+                for (s = b[4])
+                {
+                    translate([0,0,-backPlateHeight+1.1+plateThickness])
+                    {
+                        rotate(s)
+                        {
+                            translate([4,-1.5/2,h-f])
+                            cube([d-4, 1.5, 0.4]);
+                            translate([d,0,0.3-f])
+                            //cylinder(d=1.5, h=h+0.1 + (backPlateHeight-h-0.1));
+                            cylinder(d=1.5, h=h+0.1);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (s = [buttonModuleButtonSupports[3]])
+        {
+            translate([0,0,1.1 + plateThickness - 2 - f])
+            translate(s)
+            {
+                tubeD(din=buttonModuleSupportDOut+0.25, dout=buttonModuleSupportDOut+0.25+1, h=0.4);
+                moveX(-buttonModuleSupportDOut/2-3)
+                moveY(-1)
+                cube([2.7,2,0.4]);
+            }
+        }
+
+        for (s = [buttonModuleButtonSupports[2]])
+        {
+            translate([0,0, 1.1+plateThickness - 2 - f])
+            translate(s)
+            {
+                difference()
+                {
+                    tubeD(din=buttonModuleSupportDOut+0.25, dout=buttonModuleSupportDOut+0.25+1, h=0.4);
+                    turnZ(30)
+                    moveY(-4.5)
+                    moveX(-3.5)
+                    moveZ(-0.5)
+                    cube([7,3,1]);
+                }
+                moveY(2)
+                moveX(-2)
+                turnZ(30)
+                cube([2,1.5,0.4]);
+            }
+        }
+    }
+}
+
+module buttonModuleSwitches()
+{
+    for (b = thumbButtons)
+    {
+        translate ([b[0],b[1],b[3]-0.5])
+        Switch();
+    }
+}
+
+module buttonModuleFront(supports = false, holes = false)
+{
+    raiser = caseThickness+0.4;
+    for (b = thumbButtonsFront)
+    {
+        rotate([0,thumbAngle,0])
+        rotate ([0,0,b.y])
+        translate ([-primaryHandleCylinder[0]/2 + raiser, 0, b.x-9])
+        rotate ([0,90,0])
+        flipX()
+        {
+            if (supports == true)
+            {
+                cylinder(d=10, h=2);
+                moveZ(-backPlateHeight+0.8)
+                moveX(1.25)
+                {
+                    moveY(3*2.54)
+                    ScrewSupport(din=2.5, dout=buttonModuleSupportDOut, dbase=6.5, h=backPlateHeight-0.4);
+                    moveY(-3*2.54)
+                    ScrewSupport(din=2.5, dout=buttonModuleSupportDOut, dbase=6.5, h=backPlateHeight-0.4);
+                }
+            }
+            if (holes == true)
+            {
+                moveZ(-0.9)
+                cylinder(d=8, h=5);
+            }
+            if (draw_other_parts)
+            {
+                moveZ(-1.4)
+                Switch();
+                %SwitchButtonBall();
+                translate([-3*2.54, -4*2.54, -backPlateHeight])
+                CircuitBoard(py=8, px=6, rasterOffset=[1.25,0]);
+            }
+        }
+    }
+}
+
 
 module buttonModule()
 {
-    plateThickness = 1.6;
     translate([backPlateOffset.x, backPlateOffset.y, 0])
     rotate([0, 0, backPlateOffset.z])
     {
         color("orange")
         {       
             translate ([0, 0, -plateThickness])
-            CircuitBoard(backPlatePoints);
+            CircuitBoard(backPlatePoints, rasterOffset=blackPlateRasterOffset);
         }
 
         translate ([0,0,plateThickness + 3])
-        for (b = thumb_buttons)
         {
-            translate ([b[0],b[1],b[3]-0.5])
-            {
-                Switch();
-                %translate ([0,0,1.5])
-                SwitchButtonBall();
-            }
+            buttonModuleButtons();
+            // buttonModuleSprings();
+            buttonModuleSwitches();
         }
     }
 
-    translate([backPlateHatOffset.x, backPlateHatOffset.y, 0])
-    rotate([0, 0, backPlateHatOffset.z])
+    translate(thumbHatOffset) rotate(thumbHatAngle)
     {
         color("orange")
         {       
             translate ([0, 0, -plateThickness])
-            CircuitBoard(backPlateHatPoints);
+            CircuitBoard(backPlateHatPoints, rasterOffset=backPlateHatRasterOffset);
         }
     }
 }
 
 module buttonHoles()
 {
+    // Thumb-side button holes
     translate([backPlateOffset.x, backPlateOffset.y, 0])
     rotate([0, 0, backPlateOffset.z])
-	for (b = thumb_buttons)
+	for (b = thumbButtons)
 	{
 		translate ([b[0],b[1],-0.5])
 		SwitchButton(d=b[2],cavityOnly=true);
@@ -294,7 +438,7 @@ module handleCase()
             translate([0,0,handleLength])
             union()
             {
-                for (item = thumb_screws)
+                for (item = thumbScrews)
                     translate(item[0]) ScrewThreadSupport3m(12);
             }
 
@@ -308,7 +452,7 @@ module handleCase()
         // Screw locking holes
         rotate ([0,0,0])
         translate([0,0,handleLength-1.3])
-        for (item = thumb_screws)
+        for (item = thumbScrews)
             translate(item[0]) cylinder(d=4.5, h=2);
 
         // Tilted shaft hole
@@ -379,7 +523,7 @@ module thumbScrewHoles()
     translate([0,0,caseThickness])
     union ()
     {
-        for (item = thumb_screws)
+        for (item = thumbScrews)
            translate(item[0]) ScrewCavity3m(item[1], capDepth=thumbLength);
     }
 }
@@ -390,6 +534,8 @@ module thumbHoles()
     rotate(thumbPlateAngle)
     translate ([0,0,thumbLength-thumbPlateDepth])
     buttonHoles();
+
+    buttonModuleFront(holes=true);
 
     // Y-axis pot hole
     rotate (thumbPlateAngle)
@@ -405,6 +551,7 @@ module thumbHoles()
 
     // Hat shaft hole
     rotate (thumbPlateAngle)
+    translate(thumbHatOffset) rotate(thumbHatAngle)
     translate ([thumbHat.x, thumbHat.y, thumbLength-thumbPlateDepth + 2])
     rotate([0,180,thumbHat[3]])
     cylinder (d2=thumbHat[4]*0.7, d1=thumbHat[4], h=4);
@@ -419,7 +566,7 @@ module thumbSupports()
     translate ([0,0,thumbLength-thumbPlateDepth-raiser_height])
     translate([backPlateOffset.x, backPlateOffset.y, 0])
     rotate([0, 0, backPlateOffset.z])
-	for (b = thumb_buttons)
+	for (b = thumbButtons)
 	{
 		translate ([b[0],b[1],0])
 		difference()
@@ -432,6 +579,7 @@ module thumbSupports()
 
     // Hat switch raiser
     rotate (thumbPlateAngle)
+    translate(thumbHatOffset) rotate(thumbHatAngle)
     translate ([thumbHat.x, thumbHat.y, thumbLength-thumbPlateDepth])
     rotate([0,180,thumbHat[3]])
     difference()
@@ -443,30 +591,32 @@ module thumbSupports()
 
     // Backplate supports
     rotate(thumbPlateAngle)
-    translate ([0,0,thumbLength-thumbPlateDepth-2*back_plate_height])
+    translate ([0,0,thumbLength-thumbPlateDepth-2*backPlateHeight])
     {
-        for (b = button_module_supports)
+        translate([backPlateOffset.x, backPlateOffset.y, 0])
+        rotate([0, 0, backPlateOffset.z])
+        for (b = buttonModuleButtonSupports)
         {
-            translate ([b[0],b[1],back_plate_height])
-            difference()
-            {
-                union()
-                {
-                    translate([0,0,back_plate_height-1])
-                    cylinder(d1=5.2, d2=6.5, h=1);
-                    cylinder(d=5.2, h=back_plate_height);
-                }
-                translate([0,0,-0.9])
-                cylinder(d=2.5, h=back_plate_height+1);
-            }
+            translate ([b[0],b[1],backPlateHeight])
+            ScrewSupport(din=2.5, dout=buttonModuleSupportDOut, dbase=6.5, h=backPlateHeight);
+        }
+
+        translate(thumbHatOffset) rotate(thumbHatAngle)
+        for (b = buttonModuleHatSupports)
+        {
+            translate ([b[0],b[1],backPlateHeight])
+            ScrewSupport(din=2.5, dout=buttonModuleSupportDOut, dbase=6.5, h=backPlateHeight);
         }
 
         if (draw_other_parts)
         {
-            translate ([0,0,back_plate_height])
+            translate ([0,0,backPlateHeight])
             buttonModule();
-        }
+        }      
     }
+
+    buttonModuleFront(supports=true);
+
     // X-axis pot support
     rotate([0,thumbAngle,0])
     rotate ([0,0,axisXPos.y])
@@ -485,7 +635,7 @@ module thumbScrewSupports()
     translate([0,0, 5-caseThickness])
     union ()
     {
-        for (item = thumb_screws)
+        for (item = thumbScrews)
            translate(item[0]) ScrewEntrySupport3m(4, item[2]);
     }
 }
@@ -493,11 +643,28 @@ module thumbScrewSupports()
 module thumbConnectors()
 {
     l = lowerBoxSize.x * cos(thumbAngle) + caseThickness + 1;
-    translate([-l/2 + caseThickness, 43 - caseThickness, -3])
-    cube([l, 1, 6]);
+    translate([-l/2 + caseThickness, 43 - caseThickness, 0])
+    cube([l, 1, 4]);
+    
+    moveX(0.6)
+    difference()
+    {
+        tubeD(din=primaryHandleCylinder[0]-1.5, dout=primaryHandleCylinder[0]+1, h=3);
+        moveY(65)
+        cube([100,100,100], center=true);
 
-    translate([0,-primaryHandleCylinder[0]/2 + 0.1,-3])
-    cube([4, 1, 6]);
+        for (item = thumbScrews)
+           translate(item[0]) cylinder(d=12, h=5);
+
+        // Make sure it fits to the main handle part
+        difference()
+        {
+            cube([100,100,30], center=true);
+            translate([0,0, -handleLength + 2*caseThickness - 0.1])
+            moveZ(5)
+            handleSolidBody();
+        }
+    }
 }
 
 thumb_print_offset_z = 24.5;
@@ -533,20 +700,21 @@ module thumbCase()
 
                 // Screw locking extrudes
                 translate([0,0, 5-caseThickness])
-                for (item = thumb_screws)
+                for (item = thumbScrews)
                     translate(item[0]) tubeD(din=3, dout=4.2, h=1);
 
                 translate([-2*sin(thumbAngle),0,0])
                 {
                     thumbSupports();
                     thumbConnectors();
-
-                    xyPots();
                 }
         }
         translate([-2*sin(thumbAngle),0,0])
         thumbHoles();
     }
+
+    translate([-2*sin(thumbAngle),0,0])
+    xyPots();
 }
 
 module handleThumbPart()

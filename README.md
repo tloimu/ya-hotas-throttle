@@ -5,12 +5,14 @@ This 3D printable HOTAS throttle game controller. It connects as a standard USB 
 It has:
 
  - 3 axis (throttle, vertical, horizontal) with center detents an all
- - 5 buttons
+ - 7 buttons
  - hat switch with 8 directions and press button
  - lock/program button
  - RGB LED indicating state: throttle center (green), locked (red), program (blue)
  - high quality mechanical and electro-mechanical components
+ - very smooth and easy throttle action with no stiction
  - adjustable throttle handle angle (twist) for better ergonomics at different table positioning
+ - customizable throttle axis detents
  - host additional USB serial connectivity for debugging and programming
 
 **Complete Design Explosion View**
@@ -44,10 +46,15 @@ The microcontroller was placed in the handle section to minimize the amount of w
 
 All 3D printable parts are designed using OpenSCAD and I printed them using my Prusa MK3S running the default .40mm nozzle. Most parts can be printed with 0.30mm layer height but some require 0.20mm layers to get proper results.
 
+Before printing the thumb-side, add supports to the couple of screw locations like below.
+
+![Printing supports on the thumb side](img/thumb-side-printing-supports.png)
+
+
 Some parts require or benefit from post-print processing:
 
- - drill the five button holes with e.g. 8.5mm drill to make the hole walls smooth and the buttons will work smoother
- - some screw holes may benefit from drilling for easier fit
+ - drill the five button holes with e.g. 8.5mm drill to make the button hole walls smooth and the buttons will work smoother - you might also need to gently file the outsides of the buttons too if there is stuff left from printing to get them fit and move well
+ - some screw holes may benefit from drilling for easier fit (2.5mm for inner screwholes and 3mm for screwholes on circuitboards)
  - throttle center detent hole could be drilled bigger for stronger detent or cone shaped with a bit larger drill head for smoother detent exit/entry
 
 Below is an illustration of all printable parts.
@@ -99,10 +106,10 @@ On top of the 3D printable components, you need
  - 2 x linear motion rods 8mm x 168mm (get one longer and cut in two)
  - 2 x linear bearings 8x15x45 (e.g. LM8LUU)
  - 1 x Teensy LC (or another Arduino board with enough pins)
- - 2 x 10kohm LIN pot (Bourns BI P160 with center detent e.g. KNOC-model)
+ - 2 x 10kohm LIN pot (e.g. BI Technologies/TT Electronics P160 with center detent, 15mm shaft - P160KN-1QC15B10K)
  - 1 x 100mm travel 10kohm LIN slide pot (BI Technologies/TT Electronics PS100 B 10K 0E)
- - 1 x multidirectional switch 8 dir + press (Alps 688RKJXL 100401V)
- - 5 x switches (a tact switch with pins fitting the circuit board listed)
+ - 1 x multidirectional switch 8 dir + press (Alps RKJXM1015004)
+ - 7 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
  - some generic circuit board (0.1" / 2.54mm pin pitch)
  - N x screws (2.5mm and 3mm) for plastic - for case cover, handle thumb section and internal parts
@@ -116,7 +123,7 @@ On top of the 3D printable components, you need
 
 The Teensy LC can quite easily be replaced with any Arduino compatible device with USB connectivity and enough pins. With more coding effort any USB capable micro controller that fits the case could also do.
 
-The RGB LED and slide switch (lock/program) are fully optional. The multi-directional hat switch can also easily be left out, replaced with a simple switch or with a similar hat switch.
+The RGB LED and slide switch (lock/program) are fully optional. The multi-directional hat switch can also easily be left out or replaced with a simpler 4-directional hat switch.
 
 The steel ball and spring are used to make the center detent for the throttle. Different size ball and spring can be used by modifying the printed *BallSpringPlunger* parameters in the OpenSCAD files.
 

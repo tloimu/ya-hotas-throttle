@@ -97,8 +97,8 @@ module PotentiometerBournsPCW1JDown()
 	PotentiometerBournsPCW1J();
 }
 
-// LIN 10kohm pot with center detent
-module PotentiometerBournsBIP160(flip = false, cavityOnly = false)
+// BI/TT P160 pot with 15mm shaft (e.g. LIN 10kohm pot P160KN-1QC15B10K)
+module PotentiometerBIP160(flip = false, cavityOnly = false)
 {
     base_diameter = 16.5;
     base_height = 9.4;
@@ -148,7 +148,7 @@ module PotentiometerBournsBIP160(flip = false, cavityOnly = false)
 }
 
 // 8-direction + push button switch
-module Alps688RKJXL100401V()
+module AlpsRKJXM1015004()
 {
 	color("brown")
 	{
@@ -267,4 +267,26 @@ module Gt2BeltCircular(l,d=12.5,width=6)
 			rotate([0, a, 0]) translate([d/2-2,0,0]) cylinder(d=2,h=width);
 		}
 	}
+}
+
+
+module SlideSwitch(l=12, w=5, h=5, screwDistance = 16)
+{
+	translate([-l/2,-w/2,-h])
+	cube([l,w,h]);
+
+	difference()
+	{
+		translate([-screwDistance/2-2,-w/2,-0.5])
+		cube([screwDistance+4,w,0.5]);
+
+		translate([-screwDistance/2,0,-1])
+		cylinder(d=2, h=2);
+		translate([screwDistance/2,0,-1])
+		cylinder(d=2, h=2);
+	}
+
+	lever = [2, 2, 4];
+	translate([-lever.x/2, -lever.y/2, 0])
+	cube(lever);
 }

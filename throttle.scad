@@ -18,19 +18,19 @@ module Throttle()
     if (draw_other_parts == true)
     {
         translate ([0,0,case_bottom])
-        Tracks(-case_inside.x/2 + throttle_offset + throttle_value * throttle_travel);
+        Tracks(-case_inside.x/2 + throttle_offset + throttleValue * throttle_travel);
 
         color("Snow")
         moveX(throttle_offset)
         translate ([-case_inside.x/2 - throttle_lever_width/2, -base_width/2 - throttle_lever_distance, case_bottom])
         {   
             SlidePotentiometer(sliderEndLength=throttle_slider_end_length, sliderHeight=throttle_slider_height, leverHeight=20,
-                value=throttle_value, alignPin=true, alignLever=true, alignValueMax=true);
+                value=throttleValue, alignPin=true, alignLever=true, alignValueMax=true);
         }
     }
 
     color("Silver")
-    moveX(throttle_offset + throttle_value * throttle_travel - case_inside.x/2)
+    moveX(throttle_offset + throttleValue * throttle_travel - case_inside.x/2)
     {
         translate ([0,0,case_bottom])
         BasePrinted(leverDistance=throttle_lever_distance);

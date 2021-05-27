@@ -69,9 +69,16 @@ module PrintableKnobsAndButtons()
         moveX(15)
         for (i=[0:1:4])
         {
-            moveY(15*i)
+            moveY(10*i)
             moveZ(SwitchButtonBallOffsetZ)
-            SwitchButtonBall();
+            SwitchButtonBall(d=8, h=7, topRounding=3.5);
+        }
+        moveY(20)
+        for (i=[0:1:2])
+        {
+            moveY(10*i)
+            moveZ(SwitchButtonBallOffsetZ)
+            SwitchButtonBall(d=8, h=6, topRounding=3.5);
         }
     }
 }

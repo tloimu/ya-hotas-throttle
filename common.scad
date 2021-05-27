@@ -356,54 +356,59 @@ module SwitchButton(d=8, h=7, cavityOnly=false)
 	}
 	else
 	{
-		translate([0,0,-0.5])
-		{
-			cylinder(d=d, h=10);
-		}
+		translate([0,0,-0.5]) cylinder(d=d, h=10); // button hole
+		moveZ(-1.9-0.1) cylinder(d=d+2.2, h=1.9); // make sure buttons don't hit anything
 	}
 }
 
 SwitchButtonBallOffsetZ = 1.2;
-module SwitchButtonBall(d=8, h=7)
+module SwitchButtonBall(d=8, h=7, topRounding=4, text="")
 {
 	difference()
 	{
-		union ()
+		union()
 		{
-			intersection()
+			difference()
 			{
-				translate([0,0,-1.2])
-				cylinder(d=d, h=h+0.8);
-				union()
+				union ()
 				{
-					translate([0,0,h - 4])
-					sphere(d=d);
-					translate([0,0,6-d])
-					cylinder(d=d, h=h-2);
+					intersection()
+					{
+						translate([0,0,-1.2])
+						cylinder(d=d, h=h+0.8);
+						union()
+						{
+							translate([0,0,h - topRounding])
+							sphere(d=d);
+							translate([0,0,(10-topRounding)-d])
+							cylinder(d=d, h=h-2);
+						}
+					}
+					translate([0,0,-1.2])
+					cylinder(d=d+1.6, h=1.2);
 				}
+				translate([0,0,-d/2])
+				cylinder(d=d-1, h=h);
+				translate([0,0,-1.25])
+				cylinder(d1=d+0.8, d2=d-1, h=1);
+
+				// Top inner cavity
+				translate([0,0,h - 4])
+				sphere(d=d-1);
 			}
+
+			// Center shaft
 			translate([0,0,-1.2])
-			cylinder(d=d+1.6, h=1.2);
+			cylinder(d=2.5,h=h+0.7);
 		}
-		translate([0,0,-d/2])
-		cylinder(d=d-1, h=h);
-		translate([0,0,-1.25])
-		cylinder(d1=d+0.8, d2=d-1, h=1);
 
-		// Top inner cavity
-		translate([0,0,h - 4])
-		sphere(d=d-1);
+		if (text != "")
+		{
+			translate([0,-1.4,h-0.599])
+			linear_extrude(height = 0.2)
+			text(text,size=3,halign="center");
+		}
 	}
-
-	// Center shaft
-	translate([0,0,-1.2])
-	cylinder(d=2.4,h=h+0.6);
-}
-
-
-module SwitchButtonSpring()
-{
-
 }
 
 // Hat Switch with 4 directions and center push with 2x2x2mm shaft
@@ -789,5 +794,21 @@ module roundCube(d=3, size=[1, 1, 1], offset=[0, 0, 0], extended=0)
 			translate(-offset) translate([d, d, d]) cube(size2);
 			sphere(d + extended, $fn=50);
 		}
+	}
+}
+
+module ScrewSupport(din, dout, dbase, h)
+{
+	difference()
+	{
+		union()
+		{
+			translate([0,0,h-1])
+			cylinder(d1=dout, d2=dbase, h=1);
+			cylinder(d=dout, h=h);
+//#		translate([0,0,-10]) cylinder(d=din, h=10);
+		}
+		translate([0,0,-0.9])
+		cylinder(d=din, h=h+1);
 	}
 }
