@@ -63,9 +63,29 @@ Below is an illustration of all printable parts.
 
 Connect the wires like this to match the code:
 
-![Circuit Diagram](img/throttle-circuit-tinycad.png)
+![Circuit Diagram](img/handle-circuit-diagram.png)
 
-*Note: The components within the dashed region in the right of the circuit diagram are not currently in the physical build. They only exist in the code and are for future extensions.*
+| Arduino Pin | Circuit  |
+| ----        | ----     |
+| 8           | Row 1    |
+| 6           | Row 2    |
+| 0           | Row 3    |
+| 10          | Col 1    |
+| 4           | Col 2    |
+| 9           | Col 3    |
+| 1           | Col 4    |
+| 12          | Col 5    |
+| 5           | Col 6    |
+| 7           | Col 7    |
+| 11          | Col 8    |
+| 21          | Rx       |
+| 22          | Ry       |
+| 20          | Throttle |
+| 19          | Slider   |
+
+The circuit board could look like the below if you use a generic 2.54mm raster board with single sided copper stripes.
+
+![Circuit Board Layout](img/thumb-circuit-board-design.png)
 
 Below are some photos of the assembly
 
