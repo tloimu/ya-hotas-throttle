@@ -108,7 +108,7 @@ On top of the 3D printable components, you need
  - 1 x Teensy LC (or another Arduino board with enough pins)
  - 2 x 10kohm LIN pot (e.g. BI Technologies/TT Electronics P160 with center detent, 15mm shaft - P160KN-1QC15B10K)
  - 1 x 100mm travel 10kohm LIN slide pot (BI Technologies/TT Electronics PS100 B 10K 0E)
- - 1 x multidirectional switch 8 dir + press (Alps RKJXM1015004)
+ - 1 x multidirectional switch 8 dir + center press (Alps RKJXL100401V)
  - 7 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
  - some generic circuit board (0.1" / 2.54mm pin pitch)

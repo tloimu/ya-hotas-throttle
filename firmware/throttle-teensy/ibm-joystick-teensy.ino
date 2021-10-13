@@ -3,8 +3,7 @@
   The Throttle unit has keyboard diode matrix for buttons, hats and mode switches.
 */
 //#define BOUNCE_WITH_PROMPT_DETECTION
-#include <FastLED.h>
-//#include <Bounce2.h>
+#include <Bounce2.h>
 #include <Keypad.h>
 
 boolean gDebugToSerial = false;
@@ -97,12 +96,6 @@ Axis axisVer('Y');
 
 byte previousMode = MODE_STARTUP;
 byte previousThrottleCentered = 0;
-
-// Led drives
-
-#define NUM_LEDS    1
-CRGB leds[NUM_LEDS];
-const byte pinLed = 13;
 
 // Mapping pins to buttons and axis
 
@@ -291,8 +284,6 @@ void setup()
   Joystick.useManualSend(true);
   Joystick.hat(-1);
  
-  FastLED.addLeds<WS2812, pinLed, GRB>(leds, NUM_LEDS);
-
   // Precalibration of axis
   
   axisThrottle.centerValue = 526;
@@ -311,64 +302,11 @@ void setup()
   axisVer.deadZone = 25;
 }
 
-void setLeds()
-{
-  // Center detection for led color changes
-  if (axisThrottle.value > 506 and axisThrottle.value < 516)
-    throttleCentered = 1;
-  else if (axisThrottle.value > 471 and axisThrottle.value < 551)
-    throttleCentered = 2;
-  else
-    throttleCentered = 0;
-  
-  if (mode != previousMode || throttleCentered != previousThrottleCentered)
-  {
-    if (mode == MODE_LOCKED)
-      leds[0] = CRGB (255, 0, 0); // red
-    else if (mode == MODE_ALT)
-      leds[0] = CRGB (0, 0, 255); // blue
-    else
-    {
-      if (throttleCentered == 1)
-        leds[0] = CRGB (0, 255, 0); // green
-      else if (throttleCentered == 2)
-        leds[0] = CRGB (255, 255, 0); // yellow
-      else
-        leds[0] = CRGB (255, 102, 0); // orange
-    }
-    
-    previousMode = mode;
-    previousThrottleCentered = throttleCentered;
-    FastLED.show();
-  }
-}
-
 void loop()
 {
   checkAxis();
   checkKeys();
 
   Joystick.send_now();
-/*
-  if (buttonPressed[pinModeSwitch])
-  {
-    if (Serial)
-      mode = MODE_ALT;
-    else
-      mode = MODE_LOCKED;
-  }
-  else
-  {
-    mode = MODE_NORMAL;
-    if (axisThrottle > 506 and axisThrottle < 516)
-      throttleCentered = 1;
-    else if (axisThrottle > 471 and axisThrottle < 551)
-      throttleCentered = 2;
-    else
-      throttleCentered = 0;
-  }
-  */
-  //setLeds();
-
   delay(1);
 }
