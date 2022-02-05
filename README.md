@@ -91,6 +91,12 @@ Below are some photos of the assembly
 
 ![Fully Opened Photo](img/fully-opened.jpg)
 
+outside of the handle
+
+![Handle Details](img/handle-details.jpg)
+
+and how to fit everything inside the handle
+
 ![Fitting Everything In the Handle](img/handle-insides.jpg)
 
 The cable management is important to make the throttle handle move smoothly and not move on its own at any position due wires pushing it.
