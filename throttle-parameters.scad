@@ -1,7 +1,7 @@
 // Rendering
 
-throttleValue = 0.5; // Position the throttle when drawing the whole throttle unit
-separation = 10; // Separation for making exploded view
+throttleValue = 1; // Position the throttle when drawing the whole throttle unit
+separation = 0; // Separation for making exploded view
 drawOtherParts = false; // Whether to render non-printable parts as well in preview mode
 showKnobs = false; // Whether to render all knobs as well (heavy calculation warning)
 $fn = $preview ? 30 : 100;

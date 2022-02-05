@@ -63,13 +63,39 @@ Below is an illustration of all printable parts.
 
 Connect the wires like this to match the code:
 
-![Circuit Diagram](img/throttle-circuit-tinycad.png)
+![Circuit Diagram](img/handle-circuit-diagram.png)
 
-*Note: The components within the dashed region in the right of the circuit diagram are not currently in the physical build. They only exist in the code and are for future extensions.*
+| Arduino Pin | Circuit  |
+| ----        | ----     |
+| 8           | Row 1    |
+| 6           | Row 2    |
+| 0           | Row 3    |
+| 10          | Col 1    |
+| 4           | Col 2    |
+| 9           | Col 3    |
+| 1           | Col 4    |
+| 12          | Col 5    |
+| 5           | Col 6    |
+| 7           | Col 7    |
+| 11          | Col 8    |
+| 21          | Rx       |
+| 22          | Ry       |
+| 20          | Throttle |
+| 19          | Slider   |
+
+The circuit board could look like the below if you use a generic 2.54mm raster board with single sided copper stripes.
+
+![Circuit Board Layout](img/thumb-circuit-board-design.png)
 
 Below are some photos of the assembly
 
 ![Fully Opened Photo](img/fully-opened.jpg)
+
+outside of the handle
+
+![Handle Details](img/handle-details.jpg)
+
+and how to fit everything inside the handle
 
 ![Fitting Everything In the Handle](img/handle-insides.jpg)
 
@@ -108,7 +134,7 @@ On top of the 3D printable components, you need
  - 1 x Teensy LC (or another Arduino board with enough pins)
  - 2 x 10kohm LIN pot (e.g. BI Technologies/TT Electronics P160 with center detent, 15mm shaft - P160KN-1QC15B10K)
  - 1 x 100mm travel 10kohm LIN slide pot (BI Technologies/TT Electronics PS100 B 10K 0E)
- - 1 x multidirectional switch 8 dir + press (Alps RKJXM1015004)
+ - 1 x multidirectional switch 8 dir + center press (Alps RKJXL100401V)
  - 7 x switches (a tact switch with pins fitting the circuit board listed)
  - 1 x slide switch (any generic model you can fit the case)
  - some generic circuit board (0.1" / 2.54mm pin pitch)

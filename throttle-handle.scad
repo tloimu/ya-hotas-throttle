@@ -8,7 +8,7 @@ include <throttle-parameters.scad>;
 // Some part definitions for easier switch'n'replace
 // --------------------------------------------------
 
-module HatSwitch() { AlpsRKJXM1015004(); }
+module HatSwitch() { AlpsRKJXL100401V(); }
 module YAxisPot(cavityOnly=false) { PotentiometerBIP160(cavityOnly=cavityOnly); }
 module XAxisPot(cavityOnly=false) { rotate([0,0,180]) PotentiometerBIP160(flip=true,cavityOnly=cavityOnly); }
 XYPotKnobSkirt = 3;

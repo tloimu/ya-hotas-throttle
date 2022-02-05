@@ -148,7 +148,7 @@ module PotentiometerBIP160(flip = false, cavityOnly = false)
 }
 
 // 8-direction + push button switch
-module AlpsRKJXM1015004()
+module AlpsRKJXL100401V()
 {
 	color("brown")
 	{
