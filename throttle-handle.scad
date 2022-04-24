@@ -35,7 +35,7 @@ primaryHandleCylinder = [65, 0]; // diameter, offset
 lowerBoxSize = [53,26,85];
 lowerBoxPos = [-25,16,-25];
 handleAngle = 30;
-handleLength = 60; // Main handle length
+handleLength = 60; // [40:100]
 handleBaseHeight = 0; // level of the base connector plate
 
 handleCaseSwitch = [0,0,0];
@@ -756,7 +756,7 @@ module handle(showHandle = true, showThumb = true)
 
     if (showThumb)
     {
-        moveZ(handleLength + separation)
+        moveZ(handleLength + separation - 4) // ???? where is that 4 coming from
         handleThumbPart();
     }
 }

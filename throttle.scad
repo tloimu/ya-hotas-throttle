@@ -33,7 +33,8 @@ module Throttle()
     translate(guts_offset)
     color("Silver")
     {
-        Guts();
+        moveZ(case_thickness)
+        Guts(test_frame=false);
         moveX(throttle_offset)
         {
             translate ([0,0,case_bottom])
@@ -46,9 +47,10 @@ module Throttle()
         }
     }
 
+    moveX(throttle_offset)
     translate(guts_offset)
-    moveZ(shaft_length + case_bottom + base_height + separation + shaft_connector_height)
-    moveY(-handle_case_print_offset_z)
+    moveZ(shaft_length + case_bottom + base_height + 2*separation)
+    moveY(-handle_case_print_offset_z + shaftConnectorPos.y - shaft_outer_radius*2 -1.5) // ???
     turnX(handleAngle-90)
     handle();
 }
