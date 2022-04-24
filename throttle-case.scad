@@ -48,10 +48,6 @@ module CaseBottom()
         CaseNut(100, 10);
         CaseNut(140, 10);
 
-        moveZ(case_thickness)
-        translate(guts_offset)
-        Guts(test_frame=false, lowerPartOnly=true, otherParts=false);
-
         translate ([-case_outside.x/2,-case_outside.y/2,0])
         difference ()
         {

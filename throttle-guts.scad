@@ -150,7 +150,7 @@ module ThrottleAxisHolder(l=16, screw_diameter=3.5)
 }
 
 
-module CableGuide(l=10, h=23, cable_diameter=3.5, connector_hole_d=6, connector_screw_d=2, draw_connector=false, draw_guide=false)
+module CableGuide(l=10, h=base_height + case_bottom_gap + 2, cable_diameter=3.5, connector_hole_d=6, connector_screw_d=2, draw_connector=false, draw_guide=false)
 {
     connector_height = 6;
     slot_width = cable_diameter*0.8;
@@ -240,7 +240,7 @@ module Guts(test_frame=true, lowerPartOnly=true, otherParts=true)
         moveX(throttle_travel + throttle_slider_end_length + throttle_slider_screw_offset + 3)
         moveY(-3)
         {
-            CableGuide(l=10, h=base_height + case_bottom_gap + 2, cable_diameter=3.5, draw_connector=true);
+            CableGuide(h=base_height + case_bottom_gap + 2, cable_diameter=3.5, draw_connector=true);
         }
 
         if (otherParts)
@@ -291,7 +291,7 @@ module Guts(test_frame=true, lowerPartOnly=true, otherParts=true)
         moveY(-(base_width/2 + throttle_lever_distance))
         moveX(throttle_travel + throttle_slider_end_length + throttle_slider_screw_offset + 3)
         moveY(-3)
-        CableGuide(l=10, h=base_height + case_bottom_gap + 2, cable_diameter=3.5, draw_guide=true);
+        CableGuide(h=base_height + case_bottom_gap + 2, cable_diameter=3.5, draw_guide=true);
 
         translate ([0, 0, case_bottom_gap])
         Tracks(0);

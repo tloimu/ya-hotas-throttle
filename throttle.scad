@@ -44,14 +44,6 @@ module Throttle()
             moveY(base_width/2 + 3) moveZ(case_bottom + base_height + 9) flipY() turnZ(-90)
             BallSpringPlunger3(ballPart=true);
         }
-
-        moveX(-case_inside.x/2 - throttle_slider_end_length)
-        translate ([0, -base_width/2 - throttle_lever_distance, case_thickness])
-        {
-            ThrottleAxisHolder();
-            moveX(throttle_travel + 2*throttle_slider_end_length)
-            ThrottleAxisHolder();
-        }
     }
 
     translate(guts_offset)

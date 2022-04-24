@@ -16,7 +16,7 @@ bearing_length = 45;
 
 rail_diameter = 8;
 rail_length = 168;
-throttle_rails_width = 50; // [20:100]
+throttle_rails_width = 50; // [40:100]
 rails_stopper_width = 7; // Width of the throttle base stoppers on the ends of the rails
 throttle_rail_o_ring_thickness = 0.0; // Thickness of the O-rings on the rails at the stoppers to soften it (set to zero if not using o-rings)
 
