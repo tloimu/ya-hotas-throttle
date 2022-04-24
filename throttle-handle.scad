@@ -20,12 +20,9 @@ module YPotKnob() { PotKnobBristles(22.5, 17.5, 12, 3); }
 // ----------------------------------
 
 solidOnly = false; // set true for faster preview rendering
-showHandle = false;//true;
-showThumb = true;
 
 // Effective values based on the above settings and rendering mode
 
-thumbSeparation = separation;
 fnForMinkowskiHull = $preview ? 10 : 15;
 
 // ----------------------------------
@@ -405,7 +402,7 @@ module handleSolidBody()
 }
 
 shaftOuterDiameter = 20;
-shaftConnectorPos = [0,50,0];
+shaftConnectorPos = [0, 30.5 + caseThickness,0];
 shaftConnectorAngle = [90 - handleAngle,0,0];
 
 handle_case_print_offset_z = 25 + caseThickness;
@@ -445,31 +442,53 @@ module handleCase()
             // Tilted shaft connector
             translate (shaftConnectorPos)
             rotate (shaftConnectorAngle)
-            translate ([0,0,20 - caseThickness])
-            cylinder (d1=30,d2=48,h=8);
+            translate ([0,0,caseThickness + 10])
+            cylinder (d1=48+5,d2=30,h=10);
         }
-
-        // Screw locking holes
-        rotate ([0,0,0])
-        translate([0,0,handleLength-1.3])
-        for (item = thumbScrews)
-            translate(item[0]) cylinder(d=4.5, h=2);
 
         // Tilted shaft hole
         translate (shaftConnectorPos)
         rotate (shaftConnectorAngle)
         cylinder (d=shaftOuterDiameter,h=30);
 
+        // Swtich holes
+        translate([lowerBoxSize.x/2, lowerBoxPos.y + lowerBoxSize.y - 14, -lowerBoxPos.z + 22 - 9])
+        switch_cavity();
+
+        // Case screw holes
+        rotate ([0,0,0])
+        translate([0,0,handleLength-1.3])
+        for (item = thumbScrews)
+            translate(item[0]) cylinder(d=4.5, h=2);
+
         // Shaft fixing screw hole
         translate (shaftConnectorPos)
         rotate (shaftConnectorAngle)
-        translate ([-9,0,23.5 - caseThickness])
+        translate ([-9,0,19 - caseThickness])
         rotate([-90,0,90])
         {
-            cylinder (d=3,h=30);
+            cylinder (d=2.5,h=30);
             translate ([0,0,5])
             cylinder (d=5,h=30);
         }
+    }
+}
+
+module switch_cavity(w=11, h=6, depth=5, screw_distance=15)
+{
+    translate([-0.1, 0, 0])
+    {
+        cube([depth + 0.2, h, w]);
+
+        moveZ(-(screw_distance - w)/2)
+        turnY(90)
+        moveY(h/2)
+        cylinder(d=1.5, h=depth + 0.2);
+
+        moveZ((screw_distance + w)/2)
+        turnY(90)
+        moveY(h/2)
+        cylinder(d=1.5, h=depth + 0.2);
     }
 }
 
@@ -730,14 +749,14 @@ module handleThumbPart()
 // All handle parts together
 // -------------------------------------------
 
-module handle()
+module handle(showHandle = true, showThumb = true)
 {
     if (showHandle)
         handleCase();
 
     if (showThumb)
     {
-        translate([0,0, handleLength + thumbSeparation])
+        moveZ(handleLength + separation)
         handleThumbPart();
     }
 }

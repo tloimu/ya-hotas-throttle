@@ -123,8 +123,6 @@ The right side of the case top that has the center detent - to get smoother and 
 
 The X/Y potentiometers' metal shafts I got required good lubing (e.g. CRC Elektro or teflon spray). They were quite stiff to turn, but lubing them made a big difference. I didn't have this sort of issue with other pots I had, but since I wanted ones with a center detent built-in, had to go with these.
 
-This build does not use a keyboard diode matrix as Teensy LC has enough pins for all the current design's pots and switches. And still has some extra room available. For other Arduino boards with less pins, you would need to make a keyboard diode matrix and change the software to get the button states e.g. via **Keypad** Arduino library.
-
 # Parts List
 
 On top of the 3D printable components, you need

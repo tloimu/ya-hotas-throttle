@@ -2,9 +2,8 @@ include <common.scad>;
 include <throttle-base.scad>;
 include <throttle-handle.scad>;
 include <throttle-case.scad>;
+include <throttle-guts.scad>;
 
-throttle_slider_height = 6.4;
-throttle_slider_end_length = 10;
 handle_radius = 30;
 
 dist = 5;
@@ -13,19 +12,24 @@ dist = 5;
 
 module AllPrintableParts()
 {
-    CaseBottom();
+    moveY(-case_outside.y-dist)
+    {
+        CaseBottom();
 
-    moveY(case_outside.y/2 + dist)
+        moveX(case_outside.x/2 + dist + rails_stopper_width)
+        FrontstopUpperPartPrintable();
+    }
+
+    moveY(dist)
     flipY() moveZ(-case_depth-case_cover_height) CaseCover(right=true, left=false);
-
-    moveY(- case_outside.y/2 - dist)
     flipY() moveZ(-case_depth-case_cover_height) CaseCover(right=false, left=true);
 
     moveX(case_outside.x + dist)
     {
         moveY(-base_width - handle_radius)
         {
-            flipY() moveZ(-base_height)
+            moveZ(base_length/2)
+            turnY(90)
             BasePrinted(leverDistance=throttle_lever_distance);
 
             moveX(-base_length - dist)
@@ -35,9 +39,6 @@ module AllPrintableParts()
             moveX(-base_length)
             moveZ(-base_height + 2) 
             {
-                ThrottleAxisHolder(sliderPart=true);
-                moveX(-2*dist) ThrottleAxisHolder(sliderPart=true);
-
                 moveX(-25) moveZ(case_bottom + base_height + 1)
                 flipY()
                 BallSpringPlunger2(ballPart=true, springPart=false);
@@ -51,7 +52,7 @@ module AllPrintableParts()
         handleCase();
 
         moveY(handle_radius*2 + dist)
-        moveZ(thumb_print_offset_z) 
+        moveZ(thumb_print_offset_z)
         turnX(thumbPlateAngle.x) turnY(180 - thumbPlateAngle.y)
         handleThumbPart();
     }

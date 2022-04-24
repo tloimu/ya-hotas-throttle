@@ -9,9 +9,30 @@ module TeensyPlusPlus()
     cube ([9,8,4]);
 }
 
+/*
+sliderEndLength
+|<    >|
+
+	leverWidth
+       !   !
+
+       +---+             <------------------------------------- leverHeight
+       |   |                                       screwOffset
+       |   |                                           !  !
+       |   |	   
++--U--+ - - - - - - - - - - - - - - - - - - - - - - +--U--+ <-- sliderHeight
+|      |<                range               >|           |
++---------------------------------------------------------+     ------------
+
++-----+---------------------------------------------+-----+ <--+
+|  o  |[===]                                        |  o  |    +-- sliderWidth
++-----+---------------------------------------------+-----+ <--+
+*/
+
 module SlidePotentiometer(range=100, leverWidth=8.0, leverHeight=20,
 	sliderEndLength=10, sliderHeight=6.4,
-	value=0.5, alignTop=false, alignPin=false, alignLever=false, alignValueMax=false)
+	value=0.5, alignTop=false, alignPin=false, alignLever=false, alignValueMax=false,
+	screwOffset=4)
 {
     slider_length = range + leverWidth + 2 * sliderEndLength;
     slider_width = 8.3;
@@ -32,8 +53,8 @@ module SlidePotentiometer(range=100, leverWidth=8.0, leverHeight=20,
 			translate ([lever_groove_offset, (slider_width-lever_thickness*2)/2, 1])
 				cube ([range + slider_width,lever_thickness*2,sliderHeight]);
 			// Screw places
-			translate ([slider_length - 4, slider_width/2, sliderHeight - 3]) cylinder (d=3, h=4);
-			translate ([4, slider_width/2, sliderHeight - 3]) cylinder (d=3, h=4);
+			translate ([slider_length - screwOffset, slider_width/2, sliderHeight - 3]) cylinder (d=3, h=4);
+			translate ([screwOffset, slider_width/2, sliderHeight - 3]) cylinder (d=3, h=4);
 		}
 		// Lever
 		translate ([lever_offset, (slider_width-lever_thickness)/2, 0])
@@ -289,4 +310,43 @@ module SlideSwitch(l=12, w=5, h=5, screwDistance = 16)
 	lever = [2, 2, 4];
 	translate([-lever.x/2, -lever.y/2, 0])
 	cube(lever);
+}
+
+module LinearBearing(length=45, d=15, d_rail=8)
+{
+    color("Snow") difference()
+    {
+        translate ([0, 0, d/2]) turnY(90)
+            cylinder (d=d, h=length);
+        translate ([-0.1, 0, d/2]) turnY(90)
+            cylinder (d=d_rail + 0.4, h=length + 0.2);
+    }
+}
+
+module CherryMxCutout(h = 3, top_depth = 2, center = false)
+{
+	d = 14;
+	lip = 1.5;
+	bottom_depth = h - lip;
+	translate([center ? -7 : 0, center ? -7 : 0, -lip])
+	{
+		translate([0,0,-0.01])
+		cube([d, d, lip+0.02]);
+
+		// Make room to squize the clips
+		clip_width = 2.3;
+		translate([d-0.01, (d - clip_width)/2, 1])
+		cube([0.8, clip_width, 0.5 + top_depth]);
+		translate([-0.79, (d - clip_width)/2, 1])
+		cube([0.8, clip_width, 0.5 + top_depth]);
+
+		// Cut thru a thicker plate than the lip below the lip
+		overhang = 1;
+		translate([-overhang, -overhang, -( bottom_depth - 0.0001 )])
+		cube([d + 2 * overhang, d + 2 * overhang, bottom_depth]);
+
+		// Cuth thru a thicker plate deeper than onto the surface
+		translate([-1, -1, -lip + top_depth])
+		cube([d + 2, d + 2, top_depth]);
+	}
 }

@@ -10,6 +10,56 @@ module moveX(l) { translate([l,0,0]) children(); }
 module moveY(l) { translate([0,l,0]) children(); }
 module moveZ(l) { translate([0,0,l]) children(); }
 
+module conical_cube(cube_size, scale=1.2)
+{
+	translate([cube_size.x/2,cube_size.y/2,cube_size.z/2])
+	linear_extrude(cube_size.z, center = true, slices = 1, scale = scale)
+	{
+		square([cube_size.x/scale, cube_size.y/scale], center=true);
+	}
+}
+
+module conical_cubep(base, top, h, topOffset = [0, 0])
+{
+    CubePoints = [
+    [  0,  0,  0 ],  //0
+    [ base.x,  0,  0 ],  //1
+    [ base.x,  base.y,  0 ],  //2
+    [  0,  base.y,  0 ],  //3
+    [ topOffset.x, topOffset.y,  h ],  //4
+    [ top.x + topOffset.x, topOffset.y,  h ],  //5
+    [ top.x + topOffset.x, top.y + + topOffset.y,  h ],  //6
+    [ topOffset.x, top.y + topOffset.y,  h ]]; //7
+    
+    CubeFaces = [
+    [0,1,2,3],  // bottom
+    [4,5,1,0],  // front
+    [7,6,5,4],  // top
+    [5,6,2,1],  // right
+    [6,7,3,2],  // back
+    [7,4,0,3]]; // left
+    
+    polyhedron( CubePoints, CubeFaces );
+}
+
+module cube_articulated_x(c)
+{
+	over=c.y/2;
+	linear_extrude(c.z, center = false, slices = 1, scale = 1.0)
+	{
+		polygon([ [0, 0], [-over,c.y/2], [0, c.y], [c.x, c.y], [c.x + over, c.y/2], [c.x, 0], [0, 0] ]);
+	}
+}
+
+module cube_articulated_y(c)
+{
+	over=c.x/2;
+	linear_extrude(c.z, center = false, slices = 1, scale = 1.0)
+	{
+		polygon([ [0, 0], [over,-over], [c.x, 0], [c.x, c.y], [c.x/2, c.y + over], [0, c.y], [0, 0] ]);
+	}
+}
+
 module sheet_cone(x, y1, y2, h)
 {
 	points = [[0,0,0],  [0,y1,0],  [0,y1/2+y2/2,h],  [0,y1/2-y2/2,h],
@@ -810,5 +860,32 @@ module ScrewSupport(din, dout, dbase, h)
 		}
 		translate([0,0,-0.9])
 		cylinder(d=din, h=h+1);
+	}
+}
+
+module cube_l(size, dx, dy)
+{
+	x = dx > 0 ? dx : 0;
+	y = dy > 0 ? dy : 0;
+	difference()
+	{
+		cube(size);
+		translate([dx, dy, -0.01])
+		cube([size.x - abs(x) + 0.01, size.y - abs(y) + 0.01, size.z + 0.02]);
+	}
+}
+
+module cube_camfered_z(size, camfer)
+{
+	difference()
+	{
+		cube(size);
+		moveZ(size.z) moveY(size.y + 0.01)
+		{
+			turnX(90) cylinder(d=camfer, h=size.y+0.02, $fn=4);
+			moveX(size.x) turnX(90) cylinder(d=camfer, h=size.y+0.02, $fn=4);
+			turnZ(90) turnX(90) cylinder(d=camfer, h=size.x, $fn=4);
+			moveY(-size.y) turnZ(90) turnX(90) cylinder(d=camfer, h=size.x, $fn=4);
+		}
 	}
 }
