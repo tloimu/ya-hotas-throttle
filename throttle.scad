@@ -51,6 +51,7 @@ module Throttle()
     translate(guts_offset)
     moveZ(shaft_length + case_bottom + base_height + 2*separation)
     moveY(-handle_case_print_offset_z + shaftConnectorPos.y - shaft_outer_radius*2 -1.5) // ???
+    turnZ(thumbAngle)
     turnX(handleAngle-90)
     handle();
 }
