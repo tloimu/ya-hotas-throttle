@@ -350,3 +350,45 @@ module CherryMxCutout(h = 3, top_depth = 2, center = false)
 		cube([d + 2, d + 2, top_depth]);
 	}
 }
+
+
+/*
+		 ___     _______
+		/   \     O ____ T
+	  =========  ______________ Z=0
+	   |     |    
+	   |     |    H
+       |_____|   ___
+	      D
+
+	D = Outer diameter
+	H = Insert height
+	O = Max ball offset from insert level
+	T = Ball travel
+*/
+module PressOnBallPlunger(d=6.0, h=6.0, travel=1.8, ledge_h=1.0)
+{
+	ball_d = d - 0.5;
+	ledge_d = d + 0.6;
+	translate([0, 0, -h]) cylinder(d=d, h=h);
+	translate([0, 0, 0]) cylinder(d=ledge_d, h=ledge_h);
+	translate([0, 0, ledge_h + travel - ball_d / 2]) sphere(d=ball_d);
+}
+
+module GN_614_5() { PressOnBallPlunger(d=5.0, h=5, travel=1.4); }
+module GN_614_6() { PressOnBallPlunger(d=6.0, h=6, travel=1.8); }
+
+
+module heatInsert_M3(insertHeight = 6, screwDepth = 1, depthCoeff=1.5, insertD=4.0)
+{
+	dA = insertD*1.1;
+	dB = insertD*1.01;
+	H = insertHeight * depthCoeff;
+
+	translate([0, 0, -insertD*0.2+0.01])
+	cylinder(h=insertD*0.2, d2=insertD*1.2, d1=dA);
+	translate([0, 0, -H])
+	cylinder(h=H, d2=dA, d1=dB);
+	translate([0, 0, -(H + screwDepth)])
+	cylinder(h=screwDepth, d=3.8);
+}

@@ -2,12 +2,15 @@
 
   The Throttle unit has keyboard diode matrix for buttons, hats and mode switches.
 */
-//#define BOUNCE_WITH_PROMPT_DETECTION
 #include <FastLED.h>
+//#define BOUNCE_WITH_PROMPT_DETECTION
 //#include <Bounce2.h>
+//const byte debounce_interval_ms = 5;
 #include <Keypad.h>
 
-boolean gDebugToSerial = false;
+volatile boolean gModeSwitchButtonsDown = false;
+volatile boolean gDebugToSerial = false;
+volatile boolean gUseDeadZones = true;
 
 class Axis
 {
@@ -19,13 +22,14 @@ public:
   int minValue;
   int centerValue;
   char name;
+  boolean changed;
 
   Axis(char name = 'A')
   {
     this->name = name;
     this->value = 0;
     this->rawValue = 0;
-    this->deadZone = 4;
+    this->deadZone = 0;
     this->maxValue = 1020;
     this->minValue = 3;
     this->centerValue = 511;
@@ -36,19 +40,19 @@ public:
     if (rawValue != this->rawValue)
     {
       this->rawValue = rawValue;
-      int value = this->valueToPosition(rawValue);
-      if (gDebugToSerial && value != this->value)
-      {
-        Serial.print("Axis ");
-        Serial.print(this->name);
-        Serial.print(": ");
-        Serial.print(value);
-        Serial.print(" (");
-        Serial.print(rawValue);
-        Serial.println(")");
-      }
-      this->value = value;
+      int newValue = this->valueToPosition(rawValue);
+      this->changed = (newValue != this->value);
+      this->value = newValue;
     }
+  }
+
+  void debugPrint()
+  {
+    Serial.print(this->name);
+    Serial.print(": ");
+    Serial.print(this->rawValue);
+    Serial.print(" -> ");
+    Serial.print(this->value);
   }
 
   int valueToPosition(int rawValue)
@@ -60,24 +64,25 @@ public:
     return 0;
     
    int pos = rawValue - this->centerValue;
-   
+   int deadZoneEff = gUseDeadZones ? this->deadZone : 0;
+
    // Dead-zone
-   if (pos > -this->deadZone && pos < this->deadZone)
+   if (pos > -deadZoneEff && pos < deadZoneEff)
     return 511;
 
   // Curves
   if (pos > 0)
    {
     // Top-side curve
-    pos = rawValue - this->centerValue - this->deadZone;
-    unsigned long l = this->maxValue - this->centerValue - this->deadZone;
+    pos = rawValue - this->centerValue - deadZoneEff;
+    unsigned long l = this->maxValue - this->centerValue - deadZoneEff;
     return (((unsigned long) pos) * (unsigned long) 512) / l + 511;
    }
    else
    {
     // Bottom-side curve
     pos = rawValue - this->minValue;
-    unsigned long l = this->centerValue - this->minValue - this->deadZone;
+    unsigned long l = this->centerValue - this->minValue - deadZoneEff;
     return (((unsigned long) pos) * (unsigned long) 512) / l + 0;
    }
   }
@@ -149,10 +154,10 @@ Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_
 const int max_buttons = ROW_NUM * COLUMN_NUM;
 byte buttonPressed[max_buttons];
 
-const byte debounce_interval_ms = 5;
-
 void checkKeys()
 {
+  int modeSwitchButtonsDown = 0; // count the number of "mode switch buttons down"
+
   // Determine changes to button states
   keypad.getKeys();
   for (int i=0; i<LIST_MAX; i++)   // Scan the list of active keys
@@ -235,15 +240,23 @@ void checkKeys()
       {
         case pinUp:
           Joystick.button(1, value);
+          if (value)
+            modeSwitchButtonsDown++;
           break;
         case pinDown:
           Joystick.button(2, value);
+          if (value)
+            modeSwitchButtonsDown++;
           break;
         case pinForward:
           Joystick.button(3, value);
+          if (value)
+            modeSwitchButtonsDown++;
           break;
         case pinBack:
           Joystick.button(4, value);
+          if (value)
+            modeSwitchButtonsDown++;
           break;
         case pinExtraBack:
           Joystick.button(5, value);
@@ -253,6 +266,8 @@ void checkKeys()
           break;
         case pinTrigger:
           Joystick.button(10, value);
+          if (value)
+            modeSwitchButtonsDown++;
           break;
         case pinModeSwitch:
           Joystick.button(11, value);
@@ -265,6 +280,29 @@ void checkKeys()
       }
     }
     Joystick.hat(hatDir);
+  }
+  
+  // Check for mode swithes
+  gModeSwitchButtonsDown = (modeSwitchButtonsDown == 5);
+
+  if (gModeSwitchButtonsDown)
+  {
+    if (hatDir == 0)
+      gDebugToSerial = true;
+    else if (hatDir == 180)
+      gDebugToSerial = false;
+    else if (hatDir == 90)
+    {
+      gUseDeadZones = true;
+      if (gDebugToSerial)
+        Serial.println("Use dead-zones: true");
+    }
+    else if (hatDir == 270)
+    {
+      gUseDeadZones = false;
+      if (gDebugToSerial)
+        Serial.println("Usa dead-zones: false");
+    }
   }
 }
 
@@ -282,11 +320,25 @@ checkAxis()
     Joystick.Y(axisVer.value);
     Joystick.Z(axisThrottle.value);
     //Joystick.Zrotate(analogRead(analogPinSlider));
-  }  
+
+    if (gDebugToSerial && (axisThrottle.changed || axisHor.changed || axisVer.changed))
+    {
+      Serial.print("Axis: ");
+      axisThrottle.debugPrint();
+      Serial.print(", ");
+      axisHor.debugPrint();
+      Serial.print(", ");
+      axisVer.debugPrint();
+      Serial.println("");
+    }
+  }
 }
 
 void setup()
 {
+  analogReadResolution(10);
+  analogReadAveraging(2);
+
   Serial.begin(9600);
   Joystick.useManualSend(true);
   Joystick.hat(-1);
@@ -295,20 +347,20 @@ void setup()
 
   // Precalibration of axis
   
-  axisThrottle.centerValue = 526;
+  axisThrottle.centerValue = 523;
   axisThrottle.maxValue = 1021;
   axisThrottle.minValue = 3;
-  axisThrottle.deadZone = 20;
+  axisThrottle.deadZone = 0;
   
-  axisHor.centerValue = 504;
+  axisHor.centerValue = 512;
   axisHor.maxValue = 1023;
   axisHor.minValue = 2;
-  axisHor.deadZone = 25;
+  axisHor.deadZone = 30;
   
-  axisVer.centerValue = 513;
+  axisVer.centerValue = 503;
   axisVer.maxValue = 1023;
   axisVer.minValue = 2;
-  axisVer.deadZone = 25;
+  axisVer.deadZone = 30;
 }
 
 void setLeds()
@@ -370,5 +422,5 @@ void loop()
   */
   //setLeds();
 
-  delay(1);
+  // delay(1);
 }

@@ -166,7 +166,7 @@ module PotKnobBristles(d1, d2, length, skirt=5)
             translate([0,0,length-4])
             cube([shaftD, 0.8, 2], center=true);
 
-            for (a = [20:20:360])
+/*            for (a = [20:20:360])
             {
                 rotate([0,-3,a])
                 rotate([90,16,0])
@@ -174,7 +174,7 @@ module PotKnobBristles(d1, d2, length, skirt=5)
                 rotate_extrude(angle=46,convexity = 10)
                 translate([15.9, 0, 0])
                 circle(r = 0.6);
-            }
+            }*/
         }
     }
 }

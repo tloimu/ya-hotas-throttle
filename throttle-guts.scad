@@ -1,6 +1,4 @@
-include <throttle-parameters.scad>
-include <common.scad>
-
+$fn=100;
 module Backstop(rail_height=bearing_height/2)
 {
     width = base_width;
@@ -19,15 +17,13 @@ module Backstop(rail_height=bearing_height/2)
         turnY(90)
         cylinder(d1=rail_diameter + 1, d2=rail_diameter, h=1);
         translate ([0,bearing_offset, rail_height + case_bottom_gap])
-        turnY(90)
-        cylinder(d=rail_diameter, h=4);
+        hole_teardrop(d=rail_diameter, h=rails_stopper_width + 1);
         
         translate ([-0.1,-bearing_offset, rail_height + case_bottom_gap])
         turnY(90)
         cylinder(d1=rail_diameter + 1, d2=rail_diameter, h=1);
         translate ([0,-bearing_offset, rail_height + case_bottom_gap])
-        turnY(90)
-        cylinder(d=rail_diameter, h=4);
+        hole_teardrop(d=rail_diameter, h=rails_stopper_width + 1);
     }
 
     if (draw_other_parts)
@@ -46,7 +42,7 @@ module Backstop(rail_height=bearing_height/2)
 
 module FrontstopFull(lowerPart=true, rail_height=bearing_height/2)
 {
-    width = throttle_rails_width + rail_diameter * 2 + 10;
+    width = base_width;
     difference ()
     {
         if (lowerPart == true)
@@ -67,22 +63,18 @@ module FrontstopFull(lowerPart=true, rail_height=bearing_height/2)
 
         // Screw holes
         moveX(rails_stopper_width/2)
+        moveZ(case_bottom_gap)
         if (lowerPart == true)
         {
-            moveZ(case_bottom_gap)
-            {
-                moveY(0) cylinder(d=2.5, h=2*rail_height);
-                moveY(throttle_rails_width/2 + rail_diameter) cylinder(d=2.5, h=2*rail_height);
-                moveY(-throttle_rails_width/2 - rail_diameter) cylinder(d=2.5, h=2*rail_height);
-            }
+            moveY(throttle_rails_width/2 - rail_diameter - 2) cylinder(d=2.5, h=2*rail_height);
+            moveY(-throttle_rails_width/2 + rail_diameter + 2) cylinder(d=2.5, h=2*rail_height);
         }
         else
         {
-            moveZ(rail_height + case_bottom_gap - 2)
+            moveZ(rail_height - 0.1)
             {
-                moveY(0) cylinder(d=4, h=2*rail_height);
-                moveY(throttle_rails_width/2 + rail_diameter)  cylinder(d=4, h=2*rail_height);
-                moveY(-throttle_rails_width/2 - rail_diameter) cylinder(d=4, h=2*rail_height);
+                moveY(throttle_rails_width/2 - rail_diameter - 2)  cylinder(d=3.5, h=2*rail_height);
+                moveY(-throttle_rails_width/2 + rail_diameter + 2) cylinder(d=3.5, h=2*rail_height);
             }
         }
     }
@@ -240,7 +232,7 @@ module Guts(test_frame=true, lowerPartOnly=true, otherParts=true)
         moveX(throttle_travel + throttle_slider_end_length + throttle_slider_screw_offset + 3)
         moveY(-3)
         {
-            CableGuide(h=base_height + case_bottom_gap + 2, cable_diameter=3.5, draw_connector=true);
+            CableGuide(h=base_height + case_bottom_gap + 2, cable_diameter=cable_guide_cable_d, draw_connector=true);
         }
 
         if (otherParts)
@@ -262,12 +254,12 @@ module Guts(test_frame=true, lowerPartOnly=true, otherParts=true)
     // whole thing onto a bottom of any large enough case.
     // When printing everything as part of the case, these are left out as the
     // bottom of the case holds everything together instead.
+    guts_size = [throttle_travel + base_length,
+        base_width/2 + throttle_lever_distance ];
     if (test_frame)
     {
         color("green")
         {
-            guts_size = [throttle_travel + base_length,
-                base_width/2 + throttle_lever_distance ];
             translate([-guts_size.x/2, -12, 0])
             cube([guts_size.x, 24, case_bottom_gap - 1]);
 
@@ -279,8 +271,50 @@ module Guts(test_frame=true, lowerPartOnly=true, otherParts=true)
             cube_l([17, guts_size.y, case_bottom_gap - 1], -rails_stopper_width, 8);
 
             // test frame for base-buttons
-            #translate([guts_size.x/2 - 40 + rails_stopper_width, 0, 0])
-            cube_l([40, case_inside.y/2 - guts_offset.y, case_bottom_gap - 1], -rails_stopper_width, -20);
+            *translate([-guts_size.x/2 + rails_stopper_width, 0, 0])
+            cube_l([guts_size.x, case_inside.y/2 - guts_offset.y, case_bottom_gap - 1], -rails_stopper_width, -20);
+        }
+    }
+
+    // Detent plate holders
+    translate([-guts_size.x / 2 - rails_stopper_width, 0, 0])
+    cube([rails_stopper_width, detent_plate_base_offset.y, case_bottom_gap - 1]);
+    
+    moveZ(case_thickness)
+    translate(detent_plate_base_offset)
+    {
+        moveX(guts_size.x/2)
+        moveY(-detent_plate_slot_size.y/2)
+        moveZ(-detent_plate_base_offset.z - case_bottom_gap)
+        difference()
+        {
+            union()
+            {
+                cube([rails_stopper_width, detent_plate_slot_size.y, detent_plate_base_offset.z + case_bottom_gap]);
+                moveX(3.5)
+                moveY((detent_plate_slot_size.y)/2)
+                cylinder(d=rails_stopper_width + 2, h = detent_plate_base_offset.z + case_bottom_gap);
+            }
+            translate([rails_stopper_width/2, detent_plate_slot_size.y/2, detent_plate_base_offset.z])
+            moveZ(3) // ???? why 3
+            heatInsert_M3(screwDepth=4);
+        }
+
+        moveX(-guts_size.x/2 - rails_stopper_width)
+        moveY(-detent_plate_slot_size.y/2)
+        moveZ(-detent_plate_base_offset.z - case_bottom_gap)
+        difference()
+        {
+            union()
+            {
+                cube([rails_stopper_width, detent_plate_slot_size.y, detent_plate_base_offset.z + case_bottom_gap]);
+                moveX(3.5)
+                moveY((detent_plate_slot_size.y)/2)
+                cylinder(d=rails_stopper_width + 2, h = detent_plate_base_offset.z + case_bottom_gap);
+            }
+            translate([rails_stopper_width/2, detent_plate_slot_size.y/2, detent_plate_base_offset.z])
+            moveZ(3) // ???? why 3
+            heatInsert_M3(screwDepth=4);
         }
     }
 
@@ -291,7 +325,7 @@ module Guts(test_frame=true, lowerPartOnly=true, otherParts=true)
         moveY(-(base_width/2 + throttle_lever_distance))
         moveX(throttle_travel + throttle_slider_end_length + throttle_slider_screw_offset + 3)
         moveY(-3)
-        CableGuide(h=base_height + case_bottom_gap + 2, cable_diameter=3.5, draw_guide=true);
+        CableGuide(h=base_height + case_bottom_gap + 2, cable_diameter=cable_guide_cable_d, draw_guide=true);
 
         translate ([0, 0, case_bottom_gap])
         Tracks(0);

@@ -1,6 +1,4 @@
-include <common.scad>;
 include <special-parts.scad>;
-include <commercial-parts.scad>;
 include <knobs.scad>;
 include <throttle-parameters.scad>;
 
@@ -421,7 +419,6 @@ module handleCase()
                     {
                         handleSolidBody();
                         sphere(caseThickness, $fn=fnForMinkowskiHull);
-                        //cube([caseThickness * 2, caseThickness * 2, caseThickness * 2], center = true);
                     }
                 }
                 handleSolidBody();

@@ -10,6 +10,22 @@ module moveX(l) { translate([l,0,0]) children(); }
 module moveY(l) { translate([0,l,0]) children(); }
 module moveZ(l) { translate([0,0,l]) children(); }
 
+// Carves the first child with the second and fills the cavity with the rest of the children
+module carveAndFillWith()
+{
+	difference()
+	{
+		children(0);
+		children(1);
+	}
+
+	intersection()
+	{
+		children(0);
+		children([2]);
+	}
+}
+
 module conical_cube(cube_size, scale=1.2)
 {
 	translate([cube_size.x/2,cube_size.y/2,cube_size.z/2])
@@ -118,6 +134,22 @@ module hole(diameter, length)
 {
     translate ([0,0,-1])
     cylinder (r1=diameter/2, r2=diameter/2, h=length + 2);
+}
+
+module hole_teardrop(d, h)
+{
+	r = d / 2;
+	turnY(90)
+	turnZ(90)
+    moveZ(-0.1)
+	{
+		cylinder (d=d, h=h + 0.2);
+		difference()
+		{
+			turnZ(45) cube([r, r, h + 0.2]);
+			moveZ(-0.1) moveY(r*1.1) moveX(-r/2) cube([r, r, h + 0.4]);
+		}
+	}
 }
 
 module cube_inside(size, thickness)
@@ -816,9 +848,14 @@ module KnurledShaftCavity(d, h, c = 18, includeT=true, tolerance=0.25)
     }
 }
 
-module spring(d,l)
+module spring(d, l)
 {
-	%cylinder(d=d, h=l);
+	linear_extrude(height = l, convexity = 10, twist = -2000)
+	translate([d/2 - 0.2, 0, 0])
+	circle(d = 0.4);
+	tubeD(din=d-0.8, dout=d, h=0.2);
+	moveZ(l-0.2)
+	tubeD(din=d-0.8, dout=d, h=0.2);
 }
 
 module cutRectRimZ(x, y, thickness, tolerance=0.0)
@@ -847,6 +884,63 @@ module roundCube(d=3, size=[1, 1, 1], offset=[0, 0, 0], extended=0)
 	}
 }
 
+module roundCorner(h, d, margin = 0.01)
+{
+	d2 = d * 2;
+	difference()
+	{
+		moveZ(margin)
+		moveX(-margin)
+		moveY(-margin)
+		cube([d2 + 2*margin, d2 + 2*margin, h - 2*margin]);
+
+		translate([d, d])
+		{
+			moveX(-d - margin)
+			cube([d2 + margin, d2, h]);
+			moveY(-d - margin)
+			cube([d2, d2 + margin, h]);
+			
+			moveZ(d)
+			cylinder(h=h-d2, d=d2);
+			moveZ(h-d)
+			sphere(d=d2);
+			moveZ(d)
+			sphere(d=d2);
+		}
+	}
+}
+
+module roundCubeCorners(size, d, margin = 0.01)
+{
+	// TODO: Optimize to use cylinders, spheres and cubes only instead of using hulls
+    r = d / 2;
+    difference()
+    {
+		translate([-margin, -margin, -margin])
+        cube([size.x + 2*margin, size.y + 2*margin, size.z + 2*margin]);
+        moveZ(-margin)
+        hull()
+        {
+            moveZ(r - margin)
+            {
+                moveX(r - margin) moveY(r - margin) sphere(r=r);
+                moveX(size.x - r + margin) moveY(r - margin) sphere(r=r);
+                moveX(r - margin) moveY(size.y - r + margin) sphere(r=r);
+                moveX(size.x - r + margin) moveY(size.y - r + margin) sphere(r=r);
+            }
+
+            moveZ(size.z - r + 2*margin)
+            {
+                moveX(r - margin) moveY(r - margin) sphere(r=r);
+                moveX(size.x - r + margin) moveY(r - margin) sphere(r=r);
+                moveX(r - margin) moveY(size.y - r + margin) sphere(r=r);
+                moveX(size.x - r + margin) moveY(size.y - r + margin) sphere(r=r);
+            }
+        }
+    }
+}
+
 module ScrewSupport(din, dout, dbase, h)
 {
 	difference()
@@ -856,7 +950,6 @@ module ScrewSupport(din, dout, dbase, h)
 			translate([0,0,h-1])
 			cylinder(d1=dout, d2=dbase, h=1);
 			cylinder(d=dout, h=h);
-//#		translate([0,0,-10]) cylinder(d=din, h=10);
 		}
 		translate([0,0,-0.9])
 		cylinder(d=din, h=h+1);

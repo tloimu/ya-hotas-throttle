@@ -1,43 +1,30 @@
 // Throttle handle base that connect the handle to the rails and case bottom
-
-include <throttle-parameters.scad>
-include <throttle-case.scad>
-
-// Parameters
-
-bearing_margin_side = 3; // [1:5]
-bearing_margin_frontback = 2;
-bearing_offset = throttle_rails_width / 2;
-bearing_radius = bearing_height / 2;
-bearing_case_margin = 0.17;
-bearing_case_radius = bearing_radius + bearing_case_margin;
-bearing_case_length = bearing_length + 2 * bearing_case_margin;
-
-base_top_height = 2; // [1:5]
-base_width = 2 * (bearing_offset + bearing_margin_side + bearing_case_radius);
-base_length = 45 + 2 * bearing_margin_frontback;
-base_height = bearing_height + base_top_height;
-base_cavity_width = 2 * (bearing_offset - bearing_margin_side - bearing_case_radius);
-
-shaft_bolt_offsets = 18;
-shaft_connector_width = 35;
-shaft_connector_height = 4;
-shaft_base_intrusion = shaft_connector_height;
-
-
 // Bearing casing for housing standard linear bearings like LM8LUU
 
 module BearingCase()
 {
+    ziptie_thickness = 1.7;
+    ziptie_width = 3.2;
+
     // Bearing case
     translate ([-bearing_case_margin, 0, bearing_case_radius])
     rotate (a=90, v=[0,1,0])
-    cylinder (r1=bearing_case_radius, r2=bearing_case_radius,
-        h=bearing_case_length);
+    {
+        cylinder (r=bearing_case_radius, h=bearing_case_length);
+        moveX(9)
+        cylinder (r=bearing_case_radius, h=bearing_case_length);
+        scale([0.9, 1.08, 1])
+        moveZ(1) moveX(-1.5) tube(length=ziptie_width, radius=bearing_case_radius + ziptie_thickness + 1, thickness=ziptie_thickness);
+        scale([0.9, 1.08, 1])
+        moveZ(bearing_length - ziptie_width - 1) moveX(-1.5) tube(length=ziptie_width, radius=bearing_case_radius + ziptie_thickness + 1, thickness=ziptie_thickness);
+    }
     
     // Bearing insert box
-    translate ([-bearing_case_margin,-bearing_case_radius,-2])
-    cube ([bearing_case_length, 2 * bearing_case_radius, bearing_case_radius + 2]);
+    translate ([-bearing_case_margin,-bearing_case_radius*0.87,-2])
+    cube ([bearing_case_length, 1.74 * bearing_case_radius, bearing_case_radius + 2]);
+
+    translate ([-bearing_case_margin + bearing_case_length/4,-bearing_case_radius,-2])
+    cube ([bearing_case_length/2, 2 * bearing_case_radius, bearing_case_radius + 2]);
     
     front_cavity_radius = bearing_case_radius - 0.7;
     // Rod cavity
@@ -50,15 +37,6 @@ module BearingCase()
     cube ([base_length + 2, 10, bearing_radius]);
     translate ([-bearing_margin_frontback-0.1, -front_cavity_radius, -0.1])
     conical_cube ([bearing_margin_frontback, 2*front_cavity_radius, bearing_radius], 0.91);
-
-    // Zip tie holes
-    ziptie_thickness = 1.7;
-    ziptie_width = 3.2;
-    translate([0, -bearing_case_radius*2, 2.5])
-    {
-        moveX(1) cube ([ziptie_width, bearing_case_radius*4, ziptie_thickness]);
-        moveX(bearing_length - ziptie_width - 1) cube ([ziptie_width, bearing_case_radius*4, ziptie_thickness]);
-    }
 }
 
 // --------------------------
@@ -79,7 +57,7 @@ module BaseConnector()
 module ShaftAndBase(length, intrusion)
 {
     moveZ(-shaft_base_intrusion)
-    difference ()
+    difference()
     {
         union ()
         {
@@ -155,7 +133,8 @@ module BasePrinted(leverDistance=18, leverWidth=8.0, shaftConnectorWidth, shaftC
         translate ([shaft_bolt_offsets,0,0]) cylinder (r1=2, r2=2, h=bearing_height + base_top_height + 1);
         translate ([-shaft_bolt_offsets,0,0]) cylinder (r1=2, r2=2, h=bearing_height + base_top_height + 1);
 
-        translate([0, 0, base_height - shaft_base_intrusion + 0.1])
+        scale([1, 0.99, 1])
+        translate([bearing_margin_frontback/2, 0, base_height - shaft_base_intrusion + 0.01])
         BaseConnector();
     }
     moveZ(slider_height - case_bottom_gap)
@@ -197,13 +176,16 @@ module LeverModule(leverDistance=15, leverWidthReal=8.0)
     }
 }
 
+module DetentPlunger()
+{
+    GN_614_6();
+}
 
 module DetentPlungerModule()
 {
-    plate_size = [28, 12, 3];
-    screw_d = 2;
-    screw_offset = 11;
-    plunger_d = 6.5;
+    detent_plate_gap = 1;
+    plate_size = [detent_plate_size.x, detent_plate_size.y - detent_plate_gap, detent_plate_size.z];
+    plunger_d = detent_plunger_d;
     translate([-plate_size.x/2, 0, -plate_size.z + 3])
     {
         difference()
@@ -212,28 +194,15 @@ module DetentPlungerModule()
             turnX(-90)
             conical_cubep([plate_size.x + plate_size.y/1.3, plate_size.z], [plate_size.x, plate_size.z], plate_size.y, [0, 0]);
 
-            translate([plate_size.x/2 - screw_offset, plate_size.y/2, -0.1])
-            cylinder(d=screw_d, h=plate_size.z+0.2);
-            translate([plate_size.x/2 + screw_offset, plate_size.y/2, -0.1])
-            cylinder(d=screw_d, h=plate_size.z+0.2);
-
             translate([plate_size.x/2, plate_size.y/2, -0.1])
             cylinder(d=plunger_d, h=plate_size.z+0.2);
         }
     }
 
-}
-module DetentPlungerModuleOLD()
-{
-    // Ball Spring Plunger spring case
-    // moveY(base_width/2 + 6) moveZ(33) flipY() turnZ(-90) BallSpringPlunger(); // center detent actuator
-    translate([0, 2+base_width/2 + detent_ball_offset + 0.75, 12 - case_bottom + base_height + case_bottom_gap])
-    flipY() turnZ(-90) BallSpringPlunger3(ballPart=false, springPart=true);
     if (draw_other_parts)
     {
-        *translate([0, 2+base_width/2 + detent_ball_offset + 0.75, 12 - case_bottom + base_height + case_bottom_gap])
-        flipY() turnZ(-90) BallSpringPlunger3(ballPart=false, slotPart=false);
-        *translate([0, 2+base_width/2 + 0.5, 12 - case_bottom + base_height + case_bottom_gap])
-        flipY() turnZ(-90) BallSpringPlunger3(springPart=false, slotPart=false);
+        color("silver")
+        translate([0, plate_size.y/2, 3])
+        DetentPlunger();
     }
 }
